@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="ForecastFramework Demo" />
+
+
+<title></title>
+<!-- Material Design fonts -->
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="index_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="index_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="index_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="index_files/navigation-1.1/tabsets.js"></script>
+<script src="index_files/navigation-1.1/codefolding.js"></script>
+<link href="index_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="index_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="index_files/bootstrap_material-0.1/bootstrap-material-design.min.css" rel="stylesheet" />
+<link href="index_files/bootstrap_material-0.1/ripples.min.css" rel="stylesheet" />
+<script src="index_files/bootstrap_material-0.1/material.min.js"></script>
+<script src="index_files/bootstrap_material-0.1/ripples.min.js"></script>
+<link href="index_files/material-0.1/material.css" rel="stylesheet" />
+<script src="index_files/material-0.1/material.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+</head>
+
+<body>
+
+<div class="header-panel shadow z-2">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-3">
+        <div id="header">
+    <h1 class="title"><img src="images/logo.png" style="width:100px;"></h1>
+                <h4 class="author"><em>ForecastFramework Demo</em></h4>
+                </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+<div class="container-fluid main-container">
+    <div class="row">
+      <nav class="col-xs-3 menu" id="toc">
+        <ul>
+        <li><a href="#about-forecastframework"><strong>About</strong> ForecastFramework</a></li>
+        <li><a href="#getting-started"><strong>Getting Started</strong></a></li>
+        <li><a href="#defining-inputs-incidence-matrix-1"><strong>Defining Inputs</strong>: Incidence Matrix</a></li>
+        <li><a href="#fitting-and-predicting-sarima-1"><strong>Fitting and Predicting</strong>: SARIMA</a></li>
+        <li><a href="#evaluating-complex-models-sarimatd-vs.gam"><strong>Evaluating Complex Models</strong>: SARIMATD vs. GAM</a></li>
+        <li><a href="#creating-your-own-model-sarimatd-1"><strong>Creating your own Model</strong>: SARIMATD</a></li>
+        </ul>
+      </nav>
+     <div class="pages col-xs-9">
+     <div class="row">
+       <div class="col-xs-10">
+
+
+
+<div id="about-forecastframework" class="section level1">
+<h1><strong>About</strong> ForecastFramework</h1>
+<div id="purpose" class="section level3">
+<h3>Purpose</h3>
+<p>ForecastFramework is an object-oriented R package that standardizes forecasting models. The package uses the <a href="https://www.r-project.org/nosvn/pandoc/R6.html">R6 class implementation</a> to design an object-oriented framework for building forecasting models for spatial time-series data. The central goals of the ForecastFramework package are to enable <strong>rapid model development</strong> while <strong>standardizing and simplifying implementation</strong> and <strong>performance evaluation</strong>.</p>
+</div>
+<div id="usage" class="section level3">
+<h3>Usage</h3>
+<p>ForecastFramework is the primary modeling tool used at the <a href="http://reichlab.io/">Reich Lab</a> at the University of Massachusetts Amherst. Specifically, it is the modeling format used in the Predict the District Challenge.</p>
+<p>The following diagram illustrates the flow of a ForecastFramework Modeling process:</p>
+<p><img src="images/ff_diagram_overview.png" class="medium"></p>
+</div>
+<div id="creation" class="section level3">
+<h3>Creation</h3>
+<p>ForecastFramework was created by Joshua Kaminsky of the <a href="http://www.iddynamics.jhsph.edu/">Infectious Disease Dynamics Group</a> at Johns Hopkins University.</p>
+</div>
+</div>
+<div id="getting-started" class="section level1">
+<h1><strong>Getting Started</strong></h1>
+<div id="installation" class="section level3">
+<h3>Installation</h3>
+<p>ForecastFramework is an open source R package hosted on <a href="https://cran.r-project.org/web/packages/ForecastFramework/index.html">CRAN</a> and <a href="https://github.com/HopkinsIDD/ForecastFramework">Github</a>.</p>
+<p>To install this package, either run the following commands in your <a href="https://www.rstudio.com/">Rstudio</a> console:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&#39;ForecastFramework&#39;</span>)</code></pre></div>
+<p>Or:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(devtools)
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;HopkinsIDD/ForecastFramework&#39;</span>)</code></pre></div>
+</div>
+<div id="the-forecastframework-pipeline" class="section level3">
+<h3>The ForecastFramework Pipeline</h3>
+<p>Before creating your own ForecastFramework models, let’s dive deeper into the forecasting process with ForecastFramework.</p>
+<p>The ForecastFramework model is comprised of three parts: the data, the model, and the prediction. <img src="images/ff_diagram_overview.png" class="medium"></p>
+<p>These three areas of ForecastFramework make up the ForecastFramework pipeline: preprocessing, defining inputs, fitting, and predicting: <img src="images/ff_pipeline.png" class="large"></p>
+<p>Each of the subsequent vignettes looks into a part of this process. However, the preprocesing stage will be included in the Defining Inputs Vignette.</p>
+</div>
+<div id="vignette-overview" class="section level3">
+<h3>Vignette Overview:</h3>
+<ul>
+<li><h4 id="defining-inputs-incidence-matrix"><code>Defining Inputs: Incidence Matrix</code></h4>
+(<em>Beginner Section</em>) This section will define what an Incidence Matrix is, show how to format your data to be used as an Incidence Matrix, and exemplify functions of Incidence Matrices.</li>
+<li><h4 id="fitting-and-predicting-sarima"><code>Fitting and Predicting: SARIMA</code></h4>
+(<em>Beginner Section</em>)This section will focus on fitting data to a SARIMA model with ForecastFramework.</li>
+<li><h4 id="evaluating-complex-models-sarimatd-vs.-gam"><code>Evaluating Complex Models: SARIMATD vs. GAM</code></h4>
+(<em>Intermediate Section</em>) This section will demonstrate evaluation metrics and techniques by comparing two complex models in ForecastFramework.</li>
+<li><h4 id="creating-your-own-model-sarimatd"><code>Creating your own Model: SARIMATD</code></h4>
+(<em>Advanced Section</em>) This section will demonstrate how to create your own model with ForecastFramework. NOTE: This section requires object-oriented programming knowledge.</li>
+</ul>
+</div>
+</div>
+<div id="defining-inputs-incidence-matrix-1" class="section level1">
+<h1><strong>Defining Inputs</strong>: Incidence Matrix</h1>
+<div id="what-is-an-incidencematrix" class="section level3">
+<h3>What is an IncidenceMatrix?</h3>
+<p>ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called IncidenceMatrix. This vignette describes how to create an IncidenceMatrix and some key fields and methods relating to</p>
+</div>
+<div id="how-to-create-an-incidencematrix" class="section level3">
+<h3>How to create an IncidenceMatrix</h3>
+<ol style="list-style-type: decimal">
+<li>Make sure you import <code>ForecastFramework</code> and <code>R6</code></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(R6)
+<span class="kw">library</span>(ForecastFramework)</code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Create a new matrix with your data</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>,<span class="dv">3</span>,<span class="dv">3</span>)
+<span class="kw">print</span>(data_matrix)</code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    4    7
+## [2,]    2    5    8
+## [3,]    3    6    9</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Create a new IncidenceMatrix object with your data</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object &lt;-<span class="st"> </span>IncidenceMatrix<span class="op">$</span><span class="kw">new</span>(data_matrix)</code></pre></div>
+</div>
+<div id="list-incidencematrix-fields" class="section level3">
+<h3>List IncidenceMatrix Fields</h3>
+<p>The IncidenceMatrix class has several fields that can be helpful for data preprocessing.</p>
+<ul>
+<li><code>$mat</code> show data in matrix form</li>
+<li><code>$nrow</code> number of rows</li>
+<li><code>$ncol</code> number of columns</li>
+<li><code>$colData</code> columns headers</li>
+<li><code>$rowData</code> row names</li>
+<li><code>$cellData</code> list of cell metadata</li>
+<li><code>$cnames</code> names of matrix columns</li>
+<li><code>$rnames</code> names of matrix rows</li>
+<li><code>$metaData</code> any data not part of main matrix</li>
+</ul>
+</div>
+<div id="methods" class="section level3">
+<h3>Methods</h3>
+<p>In object oriented programming, a ‘method’ is a function for a class. In this case, the following methods are functions that are applied to IncidenceMatrix.</p>
+<ul>
+<li><code>$addColumns(n)</code> add <code>n</code> columns to matrix</li>
+<li><code>$addRows(n)</code> add <code>n</code> rows to matrix</li>
+<li><code>$diff(n)</code> difference between each column and lag <code>n</code> columns to the left</li>
+<li><code>$lag(n)</code> lag each columns by <code>n</code></li>
+<li><code>$head(x,y)</code> show <code>x</code> columns/rows from the top (<code>y</code>=1 for columns, 2 for rows)</li>
+<li><code>$tail(x,y)</code> show <code>x</code> columns/rows from the bottom (<code>y</code>=1 for columns, 2 for rows)</li>
+<li><code>$scale(functin(x){})</code> scale the matrix by some function</li>
+<li><code>$subset(rows=x,cols=y)</code> take a subset of the matrix by <code>x</code> rows and <code>y</code> columns</li>
+</ul>
+</div>
+<div id="field-examples" class="section level3">
+<h3>Field Examples</h3>
+<p>Let’s apply some of the example functions from above to our <code>data_object</code>.</p>
+<p><strong>$mat</strong> show data in matrix form:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object<span class="op">$</span>mat</code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    4    7
+## [2,]    2    5    8
+## [3,]    3    6    9</code></pre>
+<p></br><strong>$nrow</strong> number of rows in the matrix:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object<span class="op">$</span>nrow</code></pre></div>
+<pre><code>## [1] 3</code></pre>
+<p></br><strong>$ncol</strong> number of columns in the matrix:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object<span class="op">$</span>ncol</code></pre></div>
+<pre><code>## [1] 3</code></pre>
+<p></br><strong>$colData</strong> Edit or the column names:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object<span class="op">$</span>colData &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) <span class="co"># Initialize how many columns headers</span>
+data_object<span class="op">$</span>colData &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>))
+data_object<span class="op">$</span>colData</code></pre></div>
+<pre><code>## [[1]]
+## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot;</code></pre>
+<p></br><strong>$addColumns</strong> Edit or the column names:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object<span class="op">$</span><span class="kw">addColumns</span>(<span class="dv">2</span>)
+data_object<span class="op">$</span>colData</code></pre></div>
+<pre><code>## [[1]]
+## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot; NA  NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object<span class="op">$</span>mat</code></pre></div>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    1    4    7   NA   NA
+## [2,]    2    5    8   NA   NA
+## [3,]    3    6    9   NA   NA</code></pre>
+</div>
+</div>
+<div id="fitting-and-predicting-sarima-1" class="section level1">
+<h1><strong>Fitting and Predicting</strong>: SARIMA</h1>
+<p>This demonstration investigate the usage of models with ForecastFramework. For more information on the SARIMA Model itself, check out: <a href="https://github.com/reichlab/thai-dengue-district-challenge/blob/master/doc/ff-intro.Rmd" class="uri">https://github.com/reichlab/thai-dengue-district-challenge/blob/master/doc/ff-intro.Rmd</a>.</p>
+<div id="fitting-the-forecastframework-sarima-model" class="section level3">
+<h3>Fitting the ForecastFramework SARIMA Model</h3>
+<div id="import-packages" class="section level4">
+<h4>1. Import packages</h4>
+<p>First you must import all the required libraries. Note that ForecastFramework doesn’t requre <code>dplyr</code> or <code>ggplot2</code>, but they will be used to make a figure at the end of the demo.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(ForecastFramework)
+<span class="kw">require</span>(R6)
+<span class="kw">require</span>(forecast)
+<span class="kw">require</span>(dplyr)
+<span class="kw">require</span>(ggplot2)
+
+<span class="co"># Source R6 Files</span>
+<span class="kw">source</span>(<span class="st">&#39;../models/ContestModel.R&#39;</span>)
+<span class="kw">source</span>(<span class="st">&#39;../models/SARIMAModel.R&#39;</span>)</code></pre></div>
+<p>Now it is time to fit your SARIMA Model! ForecastFramework makes this easy.</p>
+</div>
+<div id="create-new-sarima_model-class" class="section level4">
+<h4>2. Create new sarima_model Class</h4>
+<p>In this SARIMA model, simulation is used with <code>::forecast auto.arima()</code>. So we must define the number of simulations to use, <code>nsim</code>. We also need to define the <strong>seasonal periodicity of our data</strong>, or the <code>period</code> parameter. For Dengue forecasting, we know the periodicity is 26, because the data is biweekly. once we define these parameters, they can be passed into the <code>SARIMAModel()</code> class generator to create a new <code>sarima_model</code> class.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nsim &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># Number of SARIMA simulations </span>
+sarima_model &lt;-<span class="st"> </span>SARIMAModel<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> <span class="dv">26</span>, <span class="dt">nsim =</span> nsim)</code></pre></div>
+</div>
+<div id="import-dengue-data" class="section level4">
+<h4>3. Import Dengue Data</h4>
+<p>To import data from a local csv, use the <code>read.csv()</code> command. In this example, the <code>date_sick</code> field is imported as a wrong datatype, so it must be converted to a date value with a couple of transformations. Then, the data is stored as an <code>IncidenceMatrix()</code>. An incidence matrix represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. IncidenceMatrix is the preferred input for ForecastFramework Models.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># training data for province 10, years 2006 - 2012 </span>
+dat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;../data/province-biweek-counts-training.csv&#39;</span>)
+dat<span class="op">$</span>date_sick &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="kw">strptime</span>(dat<span class="op">$</span>date_sick,<span class="st">&quot;%m/%d/%Y&quot;</span>)) <span class="co"># convert to date values</span>
+inc &lt;-<span class="st"> </span>IncidenceMatrix<span class="op">$</span><span class="kw">new</span>(<span class="dv">1</span><span class="op">+</span>reshape2<span class="op">::</span><span class="kw">acast</span>(dat,province<span class="op">~</span>date_sick,<span class="dt">value.var=</span><span class="st">&#39;cases&#39;</span>))
+<span class="kw">print</span>(inc<span class="op">$</span>mat[,<span class="dv">0</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
+<pre><code>## 2006-01-01 2006-01-15 2006-01-29 2006-02-12 2006-02-26 2006-03-12 
+##        266        163        212        114        166        147 
+## 2006-03-26 2006-04-09 2006-04-23 2006-05-07 
+##        138        118         75        407</code></pre>
+</div>
+<div id="fit-the-model" class="section level4">
+<h4>3. Fit the Model</h4>
+<p>Typically, all the provinces in Thailand would be fit separately and have different forecasts. For the scope of this demo, we are only fitting and forecasting <strong>Province 10</strong>. The SARIMAModel method requires the user to specify which province to model, in this case, we are modeling the first (and only) province in the dataset.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define how many provinces to model</span>
+<span class="co"># this demo only has data for one province: Province 10</span>
+prov_nums &lt;-<span class="st"> </span><span class="dv">1</span>
+nmodels &lt;-<span class="st"> </span><span class="kw">length</span>(prov_nums)
+sarima_model<span class="op">$</span><span class="kw">fit</span>(inc<span class="op">$</span><span class="kw">subset</span>(<span class="dt">rows =</span> prov_nums, <span class="dt">mutate =</span> <span class="ot">FALSE</span>))</code></pre></div>
+</div>
+</div>
+<div id="forecasting-with-the-forecastframework-sarima-model" class="section level3">
+<h3>Forecasting with the ForecastFramework SARIMA Model</h3>
+<div id="predicting-forecasts" class="section level4">
+<h4>4. Predicting Forecasts</h4>
+<p>Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the <code>steps</code> parameter. Then, you forecast with the <code>sarima_model$forecast()</code> method. This model will forecast one year into the future (26 biweeks).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define how many provinces to model</span>
+<span class="co"># this demo only has data for one province: Province 10</span>
+steps &lt;-<span class="st"> </span><span class="dv">26</span> <span class="co"># forecast ahead 26 biweeks</span></code></pre></div>
+<p>Then, use the built-in <code>$forecast()</code> function to create your forecasts. This creates a <strong>new R6 object with your forecasts</strong> and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X &lt;-<span class="st"> </span>sarima_model<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">steps =</span> steps)</code></pre></div>
+</div>
+</div>
+<div id="plotting-the-output" class="section level3">
+<h3>Plotting the Output</h3>
+<div id="formatting-the-forecast-output" class="section level4">
+<h4>5. Formatting the Forecast Output</h4>
+<p>To view the new forecasting data in matrix form, execute the following command:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X<span class="op">$</span>data<span class="op">$</span>mat</code></pre></div>
+<pre><code>##           1        2        3        4        5        6        7       8
+## 10 432.6677 296.4042 310.3366 270.4059 121.5812 199.9582 113.5805 164.347
+##           9       10       11       12       13       14       15       16
+## 10 163.6845 116.8311 207.0732 161.3201 226.2834 184.8051 133.1265 208.9886
+##         17       18       19       20       21       22       23       24
+## 10 119.229 138.6334 213.9226 331.4624 291.5847 439.2902 605.2553 586.8358
+##          25       26
+## 10 412.0543 308.2627</code></pre>
+<p>Lets convert the forecast matrix to a dataframe in R for easy manipulation:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># converting predictions to a dataframe to use dplyr</span>
+preds_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">as.table</span>(<span class="kw">t</span>(forecast_X<span class="op">$</span>data<span class="op">$</span>mat)))</code></pre></div>
+<p>To include the <code>date_sick</code> in the <code>forecast_X$data$mat</code> output, map the forecast to its predicted dates is to create a new data frame with the data from the missing year. Then, we will combine the output in <code>forecast_X$data</code> with the correct biweek dates.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># converting predictions to a dataframe to use dplyr</span>
+<span class="co"># import testing dataset which has 2013 data</span>
+data_X &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;../data/province-biweek-counts-testing.csv&#39;</span>)
+data_X<span class="op">$</span>date_sick &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="kw">strptime</span>(data_X<span class="op">$</span>date_sick,<span class="st">&quot;%m/%d/%Y&quot;</span>)) <span class="co"># convert to date values</span>
+preds_dates &lt;-<span class="st"> </span>data_X <span class="op">%&gt;%</span>
+<span class="st">          </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2013</span>)
+<span class="co"># add prediction dates to original forecast</span>
+preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">as.Date</span>(preds_dates<span class="op">$</span>date_sick, <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y&quot;</span>)</code></pre></div>
+<p>Now, we can add the forecast to the <code>preds_df</code>. Notice the <code>$median()</code> and <code>$quantile()</code> functions accompanied with <code>$mat</code> will produce matricies with the prediction medians and quantiles, respectively.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">preds_df &lt;-<span class="st"> </span>preds_df <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">mutate</span>( 
+      <span class="dt">pred_total_cases =</span> <span class="kw">as.vector</span>(forecast_X<span class="op">$</span><span class="kw">median</span>()<span class="op">$</span>mat),
+      <span class="dt">pred_95_lb =</span> <span class="kw">as.vector</span>(forecast_X<span class="op">$</span><span class="kw">quantile</span>(<span class="fl">0.025</span>)<span class="op">$</span>mat),
+      <span class="dt">pred_95_ub =</span> <span class="kw">as.vector</span>(forecast_X<span class="op">$</span><span class="kw">quantile</span>(<span class="fl">0.975</span>)<span class="op">$</span>mat),
+      <span class="dt">pred_80_lb =</span> <span class="kw">as.vector</span>(forecast_X<span class="op">$</span><span class="kw">quantile</span>(<span class="fl">0.05</span>)<span class="op">$</span>mat),
+      <span class="dt">pred_80_ub =</span> <span class="kw">as.vector</span>(forecast_X<span class="op">$</span><span class="kw">quantile</span>(<span class="fl">0.95</span>)<span class="op">$</span>mat),
+      <span class="dt">pred_50_lb =</span> <span class="kw">as.vector</span>(forecast_X<span class="op">$</span><span class="kw">quantile</span>(<span class="fl">0.25</span>)<span class="op">$</span>mat),
+      <span class="dt">pred_50_ub =</span> <span class="kw">as.vector</span>(forecast_X<span class="op">$</span><span class="kw">quantile</span>(<span class="fl">0.75</span>)<span class="op">$</span>mat)
+   )
+<span class="kw">print</span>(<span class="kw">head</span>(preds_df,<span class="dv">5</span>)) <span class="co"># Print the first 5 rows</span></code></pre></div>
+<pre><code>##   Var1 Var2     Freq  date_sick pred_total_cases pred_95_lb pred_95_ub
+## 1    1   10 432.6677 2013-01-01         417.9925  231.04111   640.5341
+## 2    2   10 296.4042 2013-01-15         323.1909  163.53394   553.4607
+## 3    3   10 310.3366 2013-01-29         283.2626  116.57750   526.7948
+## 4    4   10 270.4059 2013-02-12         264.4122   95.21935   505.5675
+## 5    5   10 121.5812 2013-02-26         238.0792   72.05204   491.2798
+##   pred_80_lb pred_80_ub pred_50_lb pred_50_ub
+## 1   249.3704   606.0329   353.5039   484.9692
+## 2   180.6548   520.9004   254.3539   394.2651
+## 3   137.9706   483.1986   218.4664   366.3415
+## 4   115.2515   472.8115   195.3376   339.3977
+## 5    92.0370   440.3249   171.9085   313.0449</code></pre>
+</div>
+<div id="plot-the-forecast-output" class="section level4">
+<h4>6. Plot the Forecast Output</h4>
+<p>Finally, you are able to plot your SARIMA Forecast! Lets use <code>ggplot2</code> to create a cool plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">ymin =</span> pred_95_lb, <span class="dt">ymax =</span> pred_95_ub),
+    <span class="dt">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>,
+    <span class="dt">alpha =</span> <span class="fl">0.2</span>,
+    <span class="dt">data =</span> preds_df) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">ymin =</span> pred_80_lb, <span class="dt">ymax =</span> pred_80_ub),
+    <span class="dt">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>,
+    <span class="dt">alpha =</span> <span class="fl">0.2</span>,
+    <span class="dt">data =</span> preds_df) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">ymin =</span> pred_50_lb, <span class="dt">ymax =</span> pred_50_ub),
+    <span class="dt">alpha =</span> <span class="fl">0.2</span>,
+    <span class="dt">data =</span> preds_df) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">y =</span> pred_total_cases),
+    <span class="dt">color =</span> <span class="st">&quot;royalblue&quot;</span>,
+    <span class="dt">size =</span> <span class="dv">2</span>,
+    <span class="dt">data =</span> preds_df) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">y =</span> cases),
+            <span class="dt">size=</span><span class="fl">0.7</span>,
+            <span class="dt">data =</span> data_X) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Number of Cases&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>))</code></pre></div>
+</div>
+</div>
+<div id="bangkok-metropolis-sarima-forecast" class="section level3">
+<h3>Bangkok Metropolis SARIMA Forecast</h3>
+<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" width="576" /></p>
+</div>
+</div>
+<div id="evaluating-complex-models-sarimatd-vs.gam" class="section level1">
+<h1><strong>Evaluating Complex Models</strong>: SARIMATD vs. GAM</h1>
+</div>
+<div id="creating-your-own-model-sarimatd-1" class="section level1">
+<h1><strong>Creating your own Model</strong>: SARIMATD</h1>
+</div>
+
+    </div>
+    <div class="col-xs-2">
+        </div>
+  </div>
+  </div>
+  </div>
+  <div class="row">
+    </div>
+  </div>
+
+<script>
+$(document).ready(function () {
+  // add bootstrap table styles to pandoc tables
+  $('tr.header').parent('thead').parent('table').addClass('table table-striped table-hover');
+
+    var images = $('.pages img');
+  images.filter(function() {
+      if ($(this).parent().attr("class") == "figure") {
+          return(false)
+      } else {
+          return(true);
+      }
+  }).wrap("<div class='figure'></div>");
+  images.addClass("image-thumb").wrap("<div class='panel-body'></div>");
+  $('.figure p.caption').wrap("<div class='panel-footer'></div>");
+  $('.figure').addClass('panel panel-default');
+  
+    $('.pages img')
+ 	  .addClass("image-lb");
+  $('.pages').magnificPopup({
+	      type:'image',
+	      closeOnContentClick: false,
+	      delegate: 'img',
+	      gallery: {enabled: false },
+          removalDelay: 500,
+          callbacks: {
+              beforeOpen: function() {
+                // just a hack that adds mfp-anim class to markup
+                this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+              }
+          },
+          mainClass: 'mfp-move-from-top',
+	      image: {
+	        verticalFit: true,
+            titleSrc: 'alt'
+	      }
+ 	    });
+ 	
+    window.page = window.location.hash;
+    if (window.page != "") {
+      $(".menu").find("li[data-target=" + window.page + "]").trigger("click");
+    }
+
+    /* init material bootstrap js */
+    $.material.init();
+});
+</script>
+
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

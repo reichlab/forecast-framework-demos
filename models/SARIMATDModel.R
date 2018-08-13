@@ -3,7 +3,7 @@ require(R6)
 require(forecast)
 
 
-SARIMATDModel <- R6Class(
+SARIMATDmodel <- R6Class(
   inherit = ContestModel,
   private = list(
     .data = NULL,        ## every model should have this

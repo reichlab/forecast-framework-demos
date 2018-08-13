@@ -1,0 +1,38 @@
+---
+title: <img src="images/logo.png" style="width:100px;">
+author: ForecastFramework Demo
+output:
+  rmdformats::material:
+    self_contained: false
+    highlight: tango
+    css: styles.css
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd(getwd())
+```
+  
+# **About** ForecastFramework
+
+```{r child = 'vignettes/about.Rmd'}
+```
+
+
+# **Getting Started**
+
+```{r child = 'vignettes/getting_started.Rmd'}
+```
+
+# **Defining Inputs**: Incidence Matrix
+
+```{r child = 'vignettes/IncidenceMatrix.Rmd'}
+```
+
+# **Fitting and Forecasting**: SARIMA
+
+```{r child = 'vignettes/demo_SARIMA.Rmd'}
+```
+
+# **Evaluating Complex Models**: SARIMATD vs. GAM
+
+# **Creating your own Model**: SARIMATD

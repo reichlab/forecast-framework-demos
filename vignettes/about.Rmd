@@ -1,0 +1,19 @@
+---
+title: "about"
+author: "Katie House"
+date: "August 12, 2018"
+output: html_document
+---
+
+### Purpose
+ForecastFramework is an object-oriented R package that standardizes forecasting models. The package uses the [R6 class implementation](https://www.r-project.org/nosvn/pandoc/R6.html) to design an object-oriented framework for building forecasting models for spatial time-series data. The central goals of the ForecastFramework package are to enable **rapid model development** while **standardizing and simplifying implementation** and **performance evaluation**.
+
+### Usage
+ForecastFramework is the primary modeling tool used at the [Reich Lab](http://reichlab.io/) at the University of Massachusetts Amherst. Specifically, it is the modeling format used in the Predict the District Challenge. 
+
+The following diagram illustrates the flow of a ForecastFramework Modeling process:
+
+<img src="images/ff_diagram_overview.png" class="medium">
+
+### Creation
+ForecastFramework was created by Joshua Kaminsky of the [Infectious Disease Dynamics Group](http://www.iddynamics.jhsph.edu/) at Johns Hopkins University. 
