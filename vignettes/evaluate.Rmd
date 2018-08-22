@@ -85,7 +85,7 @@ Now for the fun part! Which model performed better? This question is easy to ans
 
 ##### Side-by-Side Forecasting Timeseries
 This function creates a time series visualization with the predicted median and quantiles displayed by a specific color. Notice `forecast$quantile(0.025)$mat` gives a matrix with a 2.5% quantile. Additionally, `forecast$median()$mat` gives the median forecast for that specific time period.
-```{r, warning=FALSE, message=FALSE,fig.width=10, fig.height=5,}
+```{r, warning=FALSE, message=FALSE,fig.width=11, fig.height=5,}
 # Function to create time series with Visualization
 visualize_model <- function(forecast, rib_color, main_color){
   data_X_3years <- dat %>% filter(year > 2011)

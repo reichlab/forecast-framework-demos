@@ -6,7 +6,10 @@ output: html_document
 ---
 
 ### What is an IncidenceMatrix?
-ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called IncidenceMatrix. This vignette describes how to create an IncidenceMatrix and some key fields and methods relating to 
+ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called IncidenceMatrix. IncidenceMatrices are the stanard inputs for ForecastFramework models. This vignette describes how to create an IncidenceMatrix and some key fields and methods relating to their usage.
+
+### IncidenceMatrix in the ForecastFramework Process
+<img src="images/IncidenceMatrixDia.png" class="large">
 
 ### How to create an IncidenceMatrix
 1. Make sure you import `ForecastFramework` and `R6`

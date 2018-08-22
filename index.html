@@ -202,7 +202,11 @@ This section will examines the raw data used in the ForecastFramework models ahe
 <h1><strong>Defining Inputs</strong>: Incidence Matrix</h1>
 <div id="what-is-an-incidencematrix" class="section level3">
 <h3>What is an IncidenceMatrix?</h3>
-<p>ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called IncidenceMatrix. This vignette describes how to create an IncidenceMatrix and some key fields and methods relating to</p>
+<p>ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called IncidenceMatrix. IncidenceMatrices are the stanard inputs for ForecastFramework models. This vignette describes how to create an IncidenceMatrix and some key fields and methods relating to their usage.</p>
+</div>
+<div id="incidencematrix-in-the-forecastframework-process" class="section level3">
+<h3>IncidenceMatrix in the ForecastFramework Process</h3>
+<p><img src="images/IncidenceMatrixDia.png" class="large"></p>
 </div>
 <div id="how-to-create-an-incidencematrix" class="section level3">
 <h3>How to create an IncidenceMatrix</h3>
@@ -308,7 +312,7 @@ data_object<span class="op">$</span>colData</code></pre></div>
 </div>
 <div id="create-new-sarima_model-class" class="section level4">
 <h4>2. Create new sarima_model Class</h4>
-<p>In this SARIMA model, simulation is used with <code>::forecast auto.arima()</code>. So we must define the number of simulations to use, <code>nsim</code>. We also need to define the <strong>seasonal periodicity of our data</strong>, or the <code>period</code> parameter. For Dengue forecasting, we know the periodicity is 26, because the data is biweekly. once we define these parameters, they can be passed into the <code>SARIMAModel()</code> class generator to create a new <code>sarima_model</code> class.</p>
+<p>In this SARIMA model, simulation is used with <code>::forecast auto.arima()</code>. So we must define the number of simulations to use, <code>nsim</code>. We also need to define the seasonal periodicity of our data, or the <code>period</code> parameter. For Dengue forecasting, we know the periodicity is 26, because the data is biweekly. once we define these parameters, they can be passed into the <code>SARIMAModel()</code> class generator to create a new <code>sarima_model</code> class.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nsim &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># Number of SARIMA simulations </span>
 sarima_model &lt;-<span class="st"> </span>SARIMAModel<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> <span class="dv">26</span>, <span class="dt">nsim =</span> nsim)</code></pre></div>
 </div>
@@ -324,10 +328,16 @@ inc &lt;-<span class="st"> </span>IncidenceMatrix<span class="op">$</span><span 
 ##        266        163        212        114        166        147 
 ## 2006-03-26 2006-04-09 2006-04-23 2006-05-07 
 ##        138        118         75        407</code></pre>
+<p>Let’s look at a sample from the new IncidenceMatrix to view the IncidenceMatrixx Format:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(inc<span class="op">$</span>mat[,<span class="dv">0</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
+<pre><code>## 2006-01-01 2006-01-15 2006-01-29 2006-02-12 2006-02-26 2006-03-12 
+##        266        163        212        114        166        147 
+## 2006-03-26 2006-04-09 2006-04-23 2006-05-07 
+##        138        118         75        407</code></pre>
 </div>
 <div id="fit-the-model" class="section level4">
 <h4>3. Fit the Model</h4>
-<p>Typically, all the provinces in Thailand would be fit separately and have different forecasts. For the scope of this demo, we are only fitting and forecasting <strong>Province 10</strong>. The SARIMAModel method requires the user to specify which province to model, in this case, we are modeling the first (and only) province in the dataset.</p>
+<p>Typically, all the provinces in Thailand would be fit separately and have different forecasts. For the scope of this demo, we are only fitting and forecasting Province 10, or Bangkok Metropolis. The ForecastFramework SARIMA Model method requires the user to specify which province to model, in this case, we are modeling the first (and only) province in the dataset.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define how many provinces to model</span>
 <span class="co"># this demo only has data for one province: Province 10</span>
 prov_nums &lt;-<span class="st"> </span><span class="dv">1</span>
@@ -343,7 +353,7 @@ sarima_model<span class="op">$</span><span class="kw">fit</span>(inc<span class=
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define how many provinces to model</span>
 <span class="co"># this demo only has data for one province: Province 10</span>
 steps &lt;-<span class="st"> </span><span class="dv">26</span> <span class="co"># forecast ahead 26 biweeks</span></code></pre></div>
-<p>Then, use the built-in <code>$forecast()</code> function to create your forecasts. This creates a <strong>new R6 object with your forecasts</strong> and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.</p>
+<p>Then, use the built-in <code>$forecast()</code> function to create your forecasts. This creates a new R6 object with your forecasts and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X &lt;-<span class="st"> </span>sarima_model<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">steps =</span> steps)</code></pre></div>
 </div>
 </div>
@@ -353,14 +363,14 @@ steps &lt;-<span class="st"> </span><span class="dv">26</span> <span class="co">
 <h4>5. Formatting the Forecast Output</h4>
 <p>To view the new forecasting data in matrix form, execute the following command:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X<span class="op">$</span>data<span class="op">$</span>mat</code></pre></div>
-<pre><code>##           1        2        3        4        5       6        7        8
-## 10 508.0029 410.5456 216.7791 237.9984 225.5146 247.852 263.5634 267.6075
+<pre><code>##           1        2       3        4        5        6        7        8
+## 10 378.3668 300.4381 204.179 151.0655 151.0279 86.55394 98.06152 206.5804
 ##           9       10       11       12       13       14       15       16
-## 10 178.0937 276.0914 252.5045 137.2963 328.0456 315.6656 311.9878 262.1394
-##          17       18       19       20       21       22       23       24
-## 10 274.5277 258.6295 199.1969 251.3274 422.4395 407.7079 567.6086 580.5442
-##          25      26
-## 10 220.0051 126.759</code></pre>
+## 10 252.4627 542.6661 580.9363 369.9825 410.2498 472.5035 412.7888 245.1828
+##          17       18      19       20       21       22       23       24
+## 10 231.2643 212.9242 166.966 93.61962 92.63251 264.4695 322.6711 320.5983
+##          25       26
+## 10 247.1208 306.2267</code></pre>
 <p>Lets convert the forecast matrix to a dataframe in R for easy manipulation:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># converting predictions to a dataframe to use dplyr</span>
 preds_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">as.table</span>(<span class="kw">t</span>(forecast_X<span class="op">$</span>data<span class="op">$</span>mat)))</code></pre></div>
@@ -386,51 +396,22 @@ preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">
    )
 <span class="kw">print</span>(<span class="kw">head</span>(preds_df,<span class="dv">5</span>)) <span class="co"># Print the first 5 rows</span></code></pre></div>
 <pre><code>##   Var1 Var2     Freq  date_sick pred_total_cases pred_95_lb pred_95_ub
-## 1    1   10 508.0029 2013-01-01         411.0429  236.62911   631.5765
-## 2    2   10 410.5456 2013-01-15         320.1345  140.31904   532.8025
-## 3    3   10 216.7791 2013-01-29         282.1398  110.26099   519.3314
-## 4    4   10 237.9984 2013-02-12         260.4354   87.03255   514.7203
-## 5    5   10 225.5146 2013-02-26         239.4789   81.30562   491.8541
+## 1    1   10 378.3668 2013-01-01         413.7037  223.50575   652.8774
+## 2    2   10 300.4381 2013-01-15         318.0875  146.98439   555.6058
+## 3    3   10 204.1790 2013-01-29         276.7434  107.27265   540.9934
+## 4    4   10 151.0655 2013-02-12         260.5153   95.25561   533.6375
+## 5    5   10 151.0279 2013-02-26         239.0154   73.29757   513.3128
 ##   pred_80_lb pred_80_ub pred_50_lb pred_50_ub
-## 1  260.55662   567.5522   343.4504   472.1459
-## 2  164.31492   507.6328   249.4627   396.6794
-## 3  132.53365   473.2532   213.4288   354.0567
-## 4  117.94482   478.5126   194.5824   339.5592
-## 5   97.29332   440.1424   170.1129   321.3838</code></pre>
+## 1  242.49687   616.3850   341.3182   493.8111
+## 2  167.44855   521.3407   254.0610   394.7683
+## 3  134.29656   493.9358   205.1573   363.3995
+## 4  115.04157   478.6214   194.6559   339.9099
+## 5   91.23731   455.5579   171.0279   313.6420</code></pre>
 </div>
 <div id="plot-the-forecast-output" class="section level4">
 <h4>6. Plot the Forecast Output</h4>
-<p>Finally, you are able to plot your SARIMA Forecast! Lets use <code>ggplot2</code> to create a cool plot.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_ribbon</span>(
-    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">ymin =</span> pred_95_lb, <span class="dt">ymax =</span> pred_95_ub),
-    <span class="dt">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>,
-    <span class="dt">alpha =</span> <span class="fl">0.2</span>,
-    <span class="dt">data =</span> preds_df) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_ribbon</span>(
-    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">ymin =</span> pred_80_lb, <span class="dt">ymax =</span> pred_80_ub),
-    <span class="dt">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>,
-    <span class="dt">alpha =</span> <span class="fl">0.2</span>,
-    <span class="dt">data =</span> preds_df) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_ribbon</span>(
-    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">ymin =</span> pred_50_lb, <span class="dt">ymax =</span> pred_50_ub),
-    <span class="dt">alpha =</span> <span class="fl">0.2</span>,
-    <span class="dt">data =</span> preds_df) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(
-    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">y =</span> pred_total_cases),
-    <span class="dt">color =</span> <span class="st">&quot;royalblue&quot;</span>,
-    <span class="dt">size =</span> <span class="dv">2</span>,
-    <span class="dt">data =</span> preds_df) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> date_sick, <span class="dt">y =</span> cases),
-            <span class="dt">size=</span><span class="fl">0.7</span>,
-            <span class="dt">data =</span> data_X) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Number of Cases&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>))</code></pre></div>
+<p>Finally, you are able to plot your SARIMA Forecast! Lets use <code>ggplot2</code> to create a cool plot. ### Bangkok Metropolis SARIMA Forecast <img src="index_files/figure-html/unnamed-chunk-31-1.png" width="1056" /></p>
 </div>
-</div>
-<div id="bangkok-metropolis-sarima-forecast" class="section level3">
-<h3>Bangkok Metropolis SARIMA Forecast</h3>
-<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" width="576" /></p>
 </div>
 </div>
 <div id="evaluating-complex-models-sarimatd-vs-gam" class="section level1">
@@ -554,7 +535,7 @@ plot2 &lt;-<span class="st"> </span><span class="kw">visualize_model</span>(fore
 
 <span class="co"># Display side-by-side plots</span>
 <span class="kw">grid.arrange</span>(plot1, plot2, <span class="dt">ncol=</span><span class="dv">2</span>)</code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-38-1.png" width="960" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-38-1.png" width="1056" /></p>
 </div>
 <div id="common-evaluation-metrics" class="section level5">
 <h5>Common Evaluation Metrics</h5>
@@ -610,22 +591,22 @@ sarimaTD_eval &lt;-<span class="st"> </span><span class="kw">evaluate</span>(for
 <tbody>
 <tr class="odd">
 <td>MAE</td>
-<td align="right">204.93615</td>
+<td align="right">243.3012</td>
 <td align="right">68.21344</td>
 </tr>
 <tr class="even">
 <td>MSE</td>
-<td align="right">48912.88643</td>
+<td align="right">76563.7287</td>
 <td align="right">8299.37115</td>
 </tr>
 <tr class="odd">
 <td>MAPE</td>
-<td align="right">78.85119</td>
+<td align="right">87.8465</td>
 <td align="right">19.16284</td>
 </tr>
 <tr class="even">
 <td>RMSE</td>
-<td align="right">221.16258</td>
+<td align="right">276.7015</td>
 <td align="right">91.10088</td>
 </tr>
 </tbody>
