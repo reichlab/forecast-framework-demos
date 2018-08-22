@@ -1,0 +1,34 @@
+---
+title: "The Data"
+author: "Demo"
+date: "August 22, 2018"
+output: html_document
+---
+
+### Demo Data: Dengue Fever Bangkok
+This demonstration uses Dengue Hemorrhagic Fever case count data from the Ministry of Public Health in Thailand. Normally, the data include all 76 provinces of Thailand. For simplicity, this demo only models Bangkok Metropolis (Province ID 10). Bangkok was chosen due to a lack on sparsity in the data. 
+
+#### Raw Data
+These data include: `province`, `year`, `biweek`, `date_sick`, and `cases`. `cases` is the aggegate sum of Dengue Fever cases for that specific year and biweek.
+```{r, warning=FALSE, message=FALSE}
+dat <- read.csv('../data/province-biweek-counts.csv')
+print(head(dat))
+```
+
+#### Time Series
+A time series of the raw data looks like the following:
+```{r,fig.width=7, fig.height=4, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+dat$date_sick <- as.Date(strptime(dat$date_sick,"%m/%d/%Y")) # convert to date
+plot <- ggplot() +
+    geom_line(mapping = aes(x = date_sick, y = cases),
+              size=0.7,
+              data = dat) +
+    xlab("") + ylab("Number of Cases") +
+    coord_cartesian(ylim = c(0, 1000)) +
+    ggtitle("Dengue Fever Cases in Bangkok Metropolis")
+print(plot)
+```
+
+#### Scope of this demo
+This demo will use these data to create a ForecastFramework model for year 2013!

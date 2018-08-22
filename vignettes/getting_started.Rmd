@@ -31,6 +31,8 @@ These three areas of ForecastFramework make up the ForecastFramework pipeline: p
 Each of the subsequent vignettes looks into a part of this process. However, the preprocesing stage will be included in the Defining Inputs Vignette.
 
 ### Vignette Overview:
+* #### `The Data`
+This section will examines the raw data used in the ForecastFramework models ahead.
 * #### `Defining Inputs: Incidence Matrix`
 (*Beginner Section*) This section will define what an Incidence Matrix is, show how to format your data to be used as an Incidence Matrix, and exemplify functions of Incidence Matrices.
 * #### `Fitting and Predicting: SARIMA`

@@ -1,0 +1,380 @@
+---
+title: "Create your own Model"
+author: "Demo"
+date: "August 22, 2018"
+output: html_document
+---
+
+### Creating your Own Model
+This Tutorial will demonstrate how to create a basic model with ForecastFramework. Models are created with R Object-Oriented programming, or the [R6 package](https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html). It is essential to have a basic understanding of the structure of R6 Objects, before creating a ForecastFramework package. In this tutorial, the SARIMATD model will be created step-by-step.
+
+### SARIMATD
+SARIMATD is a model created by Evan Ray of the Reich Lab. SARIMATD uses set of wrapper functions around the forecast package to simplify estimation of and prediction from SARIMA models.
+
+Basic Steps of the Model:
+
+1. Incidence data are transformed to approximate normality
+2. Seasonal differencing is performed
+3. Transformed data are passed to `forecast::auto.arima` for model selection and estimation
+simulate trajectories of future incidence
+
+### Building the SARIMATD Model
+#### 1. Start with an Empty Model
+ForecastFramework models all have the same basic structure:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+model <- R6Class(
+  inherit = ContestModel, # or AggregateModel
+  private = list(
+    #' @method private section is for aspects we do not want the user to access directly
+  ),
+  public = list(
+    #' @method fit_ Get the model ready to predict
+    #' @param data The data to fit the model to.
+    fit = function(data){
+      ...
+    },
+    #' @method forecast Predict some number of time steps into the future.
+    #' @param newdata The data to forecast from
+    #' @param steps The number of timesteps into the future to predict.
+    forecast = function(newdata,steps){
+      ...
+    },
+    #' @method initialize Create a new instance of this class. 
+    initialize = function(){
+      ...
+    },
+    #' @method predict predict using the model.
+    #' @param newdata Predict using the model.
+    predict = function(newdata){
+      ...
+    },
+  )
+)
+```
+
+#### 2. Define your `fit()` and `forecast()` functions
+The easiest way to incorporate a model into ForecastFramework is to pre-define your fit and forecast functions in a separate package, or use a separate package like the `forecast` package. The [SARMATD package](https://github.com/reichlab/sarimaTD) is hosted on Github and available for download with CRAN.
+
+The SARIMATD fit function is as follows:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+#' @param y a univariate time series or numeric vector.
+#' @param ts_frequency frequency of time series.  Must be provided if y is not
+#'   of class "ts".  See the help for stats::ts for more.
+#' @param transformation character specifying transformation type:
+#'   "box-cox", "log", "forecast-box-cox", or "none".  See details for more.
+#' @param seasonal_difference boolean; take a seasonal difference before passing
+#'   to auto.arima?
+#' @param auto.arima_d order of first differencing argument to auto.arima.
+#' @param auto.arima_D order of seasonal differencing argument to auto.arima.
+fit_sarima(
+          y,
+          ts_frequency,
+          transformation = "box-cox",
+          seasonal_difference = TRUE,
+          d = NA,
+          D = NA)
+```
+
+The SARIMATD forecast function is as follows (note that SARIMATD is a simulated forecast):
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+#' @param object a sarima fit of class "sarima_td", as returned by fit_sarima
+#' @param nsim number of sample trajectories to simulate
+#' @param seed either `NULL` or an integer that will be used in a call to
+#'   `set.seed` before simulating the response vectors.  If set, the value is
+#'   saved as the "seed" attribute of the returned value.  The default, `Null`,
+#'   will not change the random generator state, and return `.Random.seed`
+#'   as the "seed" attribute
+#' @param newdata new data to simulate forward from
+#' @param h number of time steps forwards to simulate
+#'
+#' @return an nsim by h matrix with simulated values
+simulate.sarimaTD(
+                  object,
+                  nsim = 1,
+                  seed = NULL,
+                  newdata,
+                  h = 1)
+``` 
+
+#### 3. Update the R6 Private Section
+This section of the Model:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+ private = list(
+    #' @method private section is for aspects we do not want the user to access directly
+  ),
+```
+Will become:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+  private = list(
+    .data = NULL,        ## every model should have this
+    .models = list(),    ## specific to models that are fit separately for each location
+    .nsim = 1000,         ## models that are simulating forecasts need this
+    .lambda = list(),    ## specific to ARIMA models
+    .period = integer(0) ## specific to SARIMA models
+  ),
+```
+
+#### 4. Update the fit Method
+Upload IncidenceMatrix to Fit function:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+ fit = function(data) {
+      ## All fit functions should have this, it helps with debugging
+      if("fit" %in% private$.debug){browser()}
+      
+      ## stores data for easy access and checks to make sure it's the right class
+      private$.data <- IncidenceMatrix$new(data)
+      
+ }
+```
+
+Cycle though each province and use the `fit_sarima()` function.
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+ fit = function(data) {
+      ## All fit functions should have this, it helps with debugging
+      if("fit" %in% private$.debug){browser()}
+    
+      ## stores data for easy access and checks to make sure it's the right class
+      private$.data <- IncidenceMatrix$new(data)
+      
+      ## for each location/row
+      for (row_idx in 1:private$.data$nrow) {
+        ### need to create a y vector with incidence at time t
+        y <- private$.data$subset(rows = row_idx, mutate = FALSE)
+        
+        ## private$.models[[row_idx]] <- something
+        y_ts <- ts(as.vector(y$mat), frequency = private$.period)
+        private$.lambda[[row_idx]] <- BoxCox.lambda(y_ts)
+        private$.models[[row_idx]] <- fit_sarima(y = y_ts,
+                                                 transformation = "box-cox",
+                                                 seasonal_difference = TRUE)
+      }
+ }
+```
+
+#### 4. Update the forecast Method
+Using the pre-defined equation `simulate.sarimaTD()` for the forecast method. `nmodels`, `sim_forecasts` and `dimnames(simforecasts)` are all variables needed to define a simulated forecast in ForecastFramework.
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+    forecast = function(newdata = private$.data, steps) {
+      ## include for debugging
+      if("forecast" %in% private$.debug){browser()} 
+      
+      ## number of models (provinces) to forecast
+      nmodels <- length(private$.models)
+      
+      ## define an array to store the simulated forecasts
+      sim_forecasts <- array(dim = c(nmodels, steps, private$.nsim))
+      dimnames(sim_forecasts) <- list(newdata$rnames, 1:steps, NULL)
+      
+    }
+```
+
+Now, the Provinces are iterated through and simulated with the `simulate.sarimaTD()`function (called as just `simulate()`). Then, there are a couple of matrix transformations to input the simulated matrix into the `SimulatedIncidenceMatrix()` Object.
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+    forecast = function(newdata = private$.data, steps) {
+      ## include for debugging
+      if("forecast" %in% private$.debug){browser()} 
+      
+      ## number of models (provinces) to forecast
+      nmodels <- length(private$.models)
+      
+      ## define an array to store the simulated forecasts
+      sim_forecasts <- array(dim = c(nmodels, steps, private$.nsim))
+      dimnames(sim_forecasts) <- list(newdata$rnames, 1:steps, NULL)
+      
+      ## iterate through each province and forecast with simulate.satimaTD
+      for(model_idx in 1:length(private$.models)) {
+          tmp_arima <-  simulate(object = private$.models[[model_idx]],
+                                 nsim = private$.nsim,
+                                 seed = 1,
+                                 newdata = as.vector(newdata$mat[model_idx,]),
+                                 h = steps
+                                )
+          ## transpose simulate() output to be consistent with ForecastFramework
+          tmp_arima <- t(tmp_arima)
+          sim_forecasts[model_idx, , ] <- tmp_arima
+      }
+      private$output <- SimulatedIncidenceMatrix$new(sim_forecasts)
+      return(IncidenceForecast$new(private$output, forecastTimes = rep(TRUE, steps)))
+    }
+```
+
+#### 5. Update the initialize Method
+The initialize method is to initialize inputs. In this case, one input that needs initialization is the period (number of biweeks).
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+initialize = function(period = 26, nsim=1000) { 
+      ## this code is run during SARIMAModel$new()
+      ## need to store these arguments within the model object
+      private$.nsim <- nsim
+      private$.period <- period
+    },
+```
+
+#### 6. Update the active section
+This section determines what users can change in the model:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+active = list(
+    ## This list determines how you can access pieces of your model object
+    data = function(value) {
+      ## use this form when you want this parameter to be un-modifiable
+      if(!missing(value))
+        stop("Writing directly to the data is not allowed.")
+      return(private$.data)
+    },
+    models = function(value) {
+      ## use this form when you want this parameter to be un-modifiable
+      if(!missing(value))
+        stop("Writing directly to the models is not allowed.")
+      return(private$.models)
+    },
+    nsim = function(value) {
+      ## use this form when you want to be able to change this parameter
+      private$defaultActive(type="private", ".nsim", val=value)
+    },
+    lambda = function(value) {
+      ## use this form when you want this parameter to be un-modifiable
+      if(!missing(value))
+        stop("Writing directly to lambda is not allowed.")
+      return(private$.lambda)
+    },
+    period = function(value) {
+      ## use this form when you want this parameter to be un-modifiable
+      if(!missing(value))
+        stop("Writing directly to the model period is not allowed.")
+      return(private$.period)
+    }
+  )
+```
+
+#### 7. Putting everything Together
+All of the previous sections and methods are put together as the R6 Object:
+
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
+library(ForecastFramework)
+library(R6)
+library(forecast)
+library(sarimaTD)
+
+# SARIMATDModel Description:
+# Implementation of the sarimaTD model created by Evan Ray
+# More information about sarimaTD in https://github.com/reichlab/sarimaTD 
+# Integrated into ForecastFramework by: Katie House, 6/22/2018
+
+SARIMATD1Model <- R6Class(
+  inherit = ContestModel,
+  private = list(
+    .data = NULL,        ## every model should have this
+    .models = list(),    ## specific to models that are fit separately for each location
+    .nsim = 1000,        ## models that are simulating forecasts need this
+    .period = integer(0) ## specific to SARIMA models
+  ),
+  public = list(
+    ## data will be MatrixData
+    fit = function(data) {
+      if("fit" %in% private$.debug){browser()}
+      ## stores data for easy access and checks to make sure it's the right class
+      private$.data <- IncidenceMatrix$new(data)
+      
+      ## for each location/row
+      for (row_idx in 1:private$.data$nrow) {
+        ### need to create a y vector with incidence at time t
+        y <- private$.data$subset(rows = row_idx, mutate = FALSE)
+        
+        ## convert y vector to time series data type
+        y_ts <- ts(as.vector(y$mat), frequency = private$.period)
+        
+        ## fit sarimaTD with 'fit_sarima()' from sarimaTD package
+        ## fit_sarima() performs box-cox transformation and seasonal differencing
+        private$.models[[row_idx]] <- fit_sarima(y = y_ts,
+                                                 transformation = "box-cox",
+                                                 seasonal_difference = TRUE)
+      }
+    },
+    forecast = function(newdata = private$.data, steps) {
+      ## include for debugging
+      if("forecast" %in% private$.debug){browser()} 
+      
+      ## number of models (provinces) to forecast
+      nmodels <- length(private$.models)
+      
+      ## define an array to store the simulated forecasts
+      sim_forecasts <- array(dim = c(nmodels, steps, private$.nsim))
+      dimnames(sim_forecasts) <- list(newdata$rnames, 1:steps, NULL)
+      
+      ## iterate through each province and forecast with simulate.satimaTD
+      for(model_idx in 1:length(private$.models)) {
+          tmp_arima <-  simulate(object = private$.models[[model_idx]],
+                                 nsim = private$.nsim,
+                                 seed = 1,
+                                 newdata = as.vector(newdata$mat[model_idx,]),
+                                 h = steps
+                                )
+          ## transpose simulate() output to be consistent with ForecastFramework
+          tmp_arima <- t(tmp_arima)
+          sim_forecasts[model_idx, , ] <- tmp_arima
+      }
+      private$output <- SimulatedIncidenceMatrix$new(sim_forecasts)
+      return(IncidenceForecast$new(private$output, forecastTimes = rep(TRUE, steps)))
+    },
+    initialize = function(period = 26, nsim=1000) { 
+      ## this code is run during SARIMAModel$new()
+      ## need to store these arguments within the model object
+      private$.nsim <- nsim
+      private$.period <- period
+    },
+    predict = function(newdata) {
+      stop("predict method has not been written.")
+    }
+  ),
+  active = list(
+    ## This list determines how you can access pieces of your model object
+    data = function(value) {
+      ## use this form when you want this parameter to be un-modifiable
+      if(!missing(value))
+        stop("Writing directly to the data is not allowed.")
+      return(private$.data)
+    },
+    models = function(value) {
+      ## use this form when you want this parameter to be un-modifiable
+      if(!missing(value))
+        stop("Writing directly to the models is not allowed.")
+      return(private$.models)
+    },
+    nsim = function(value) {
+      ## use this form when you want to be able to change this parameter
+      private$defaultActive(type="private", ".nsim", val=value)
+    },
+    period = function(value) {
+      ## use this form when you want this parameter to be un-modifiable
+      if(!missing(value))
+        stop("Writing directly to the model period is not allowed.")
+      return(private$.period)
+    }
+  )
+)
+```
+
+#### 8. Testing the New Model
+Lets now test the model on the same biweek counts as the SARIMA demo. The output is a forecasted case count for 26 biweeks.
+```{r, warning=FALSE, message=FALSE}
+# training data for province 10, years 2006 - 2012 
+dat <- read.csv('../data/province-biweek-counts-training.csv')
+dat$date_sick <- as.Date(strptime(dat$date_sick,"%m/%d/%Y")) # convert to date values
+inc <- IncidenceMatrix$new(1+reshape2::acast(dat,province~date_sick,value.var='cases'))
+
+# define how many provinces to model
+# this demo only has data for one province: Province 10
+nsim <- 1000 # Number of SARIMA simulations 
+sarimaTD_model <- SARIMATD1Model$new(period = 26, nsim = nsim)
+
+prov_nums <- 1
+nmodels <- length(prov_nums)
+sarimaTD_model$fit(inc$subset(rows = prov_nums, mutate = FALSE))
+
+# define how many provinces to model
+# this demo only has data for one province: Province 10
+steps <- 26 # forecast ahead 26 biweeks
+
+forecast_X <- sarimaTD_model$forecast(steps = steps)
+
+print(forecast_X$data$mat)
+```
