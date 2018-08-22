@@ -117,7 +117,7 @@ print(head(preds_df,5)) # Print the first 5 rows
 #### 6. Plot the Forecast Output
 Finally, you are able to plot your SARIMA Forecast! Lets use `ggplot2` to create a cool plot.
 ### Bangkok Metropolis SARIMA Forecast
-```{r, warning=FALSE, message=FALSE,echo=FALSE,fig.width=11, fig.height=5}
+```{r, warning=FALSE, message=FALSE,echo=FALSE,fig.width=10, fig.height=4}
 ggplot() +
   geom_ribbon(
     mapping = aes(x = date_sick, ymin = pred_95_lb, ymax = pred_95_ub),
