@@ -27,21 +27,21 @@ setwd(getwd())
 ```{r child = 'vignettes/data.Rmd'}
 ```
 
-# **Defining Inputs**: Incidence Matrix
+# **Defining Inputs** Incidence Matrix
 
 ```{r child = 'vignettes/IncidenceMatrix.Rmd'}
 ```
 
-# **Fitting and Forecasting**: SARIMA
+# **Fitting and Forecasting** SARIMATD
 
 ```{r child = 'vignettes/demo_SARIMA.Rmd'}
 ```
 
-# **Evaluating Complex Models**: SARIMATD vs GAM
+# **Evaluating Complex Models** SARIMATD, SARIMA, GAM
 ```{r child = 'vignettes/evaluate.Rmd'}
 ```
 
-# **Creating your own Model**: SARIMATD
+# **Creating your own Model** SARIMATD
 ```{r child = 'vignettes/create.Rmd'}
 ```
 

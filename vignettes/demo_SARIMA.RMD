@@ -1,77 +1,110 @@
 ---
-title: "SARIMA Demo"
+title: "SARIMA TD Demo"
 author: "Katie House"
 date: "June 20, 2018"
 output: html_document
 ---
+### About SARIMATD
+This demonstration investigates the usage of models with ForecastFramework. [SARIMATD](https://github.com/reichlab/sarimaTD) is a new R package created by Evan Ray of the Reich Lab. SARIMATD stands for SARIMA with Transformations and Seasonal Differencing. SARIMATD is a model composed of a set of wrapper functions that simplify estimating and predicting traditional SARIMA models. These wrapper functions first transform the incidence data to approximate normality, then perform seasonal differencing, and input the new incidence data to the ``forecast::auto.arima`` function from the Forecast package.
 
-This demonstration investigate the usage of models with ForecastFramework. For more information on the SARIMA Model itself, check out: <https://github.com/reichlab/thai-dengue-district-challenge/blob/master/doc/ff-intro.Rmd>.
-
-### Fitting the ForecastFramework SARIMA Model
+### Fitting the ForecastFramework SARIMATD Model
 #### 1. Import packages
 First you must import all the required libraries. Note that ForecastFramework doesn't requre `dplyr` or `ggplot2`, but they will be used to make a figure at the end of the demo.
 
 ```{r, warning=FALSE, message=FALSE}
-require(ForecastFramework)
-require(R6)
-require(forecast)
-require(dplyr)
-require(ggplot2)
+library(ForecastFramework)
+library(R6)
+library(forecast)
+library(dplyr)
+library(ggplot2)
+library(cdcfluview)
 
 # Source R6 Files
-source('../models/ContestModel.R')
-source('../models/SARIMAModel.R')
+library(RCurl)
+
+# Function of Source Github Models
+source_github <- function(u) {
+  # read script lines from website and evaluate
+  script <- getURL(u, ssl.verifypeer = FALSE)
+  eval(parse(text = script),envir=.GlobalEnv)
+}  
+# Source R6 Files
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R')
 ```
 
-Now it is time to fit your SARIMA Model! ForecastFramework makes this easy. 
+Now it is time to fit your SARIMATD Model! ForecastFramework makes this easy. 
 
-#### 2. Create new sarima_model Class
-In this SARIMA model, simulation is used with `::forecast auto.arima()`. So we must define the number of simulations to use, `nsim`. We also need to define the seasonal periodicity of our data, or the `period` parameter. For Dengue forecasting, we know the periodicity is 26, because the data is biweekly. once we define these parameters, they can be passed into the `SARIMAModel()` class generator to create a new `sarima_model` class.
+#### 2. Create new SARIMATDmodel Class
+In this SARIMATD model, simulation is used with `::forecast auto.arima()`. So we must define the number of simulations to use, `nsim`. We also need to define the seasonal periodicity of our data, or the `period` parameter. For this forecast, we know the periodicity is 52, because the data is weekly. once we define these parameters, they can be passed into the `SARIMATDModel()` class generator to create a new `sarimaTDmodel` class.
 
 ```{r, warning=FALSE, message=FALSE}
-nsim <- 1000 # Number of SARIMA simulations 
-sarima_model <- SARIMAModel$new(period = 26, nsim = nsim)
+nsim <- 10 # Number of SARIMA simulations 
+sarimaTDmodel <- SARIMATD1Model$new(period = 52, nsim = nsim)
 ```
 
-#### 3. Import Dengue Data
-To import data from a local csv, use the `read.csv()` command. In this example, the `date_sick` field is imported as a wrong datatype, so it must be converted to a date value with a couple of transformations. Then, the data is stored as an `IncidenceMatrix()`. An incidence matrix represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. IncidenceMatrix is the preferred input for ForecastFramework Models.
+#### 3. Import CDC Flu Data
+To import the fluview data, use the `ilinet()` command. The data is then filtered to remove unneeded weeks and years. Then, the data is stored as an `IncidenceMatrix()`. An incidence matrix represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. IncidenceMatrix is the preferred input for ForecastFramework Models.
 ```{r, warning=FALSE, message=FALSE}
-# training data for province 10, years 2006 - 2012 
-dat <- read.csv('../data/province-biweek-counts-training.csv')
-dat$date_sick <- as.Date(strptime(dat$date_sick,"%m/%d/%Y")) # convert to date values
-inc <- IncidenceMatrix$new(1+reshape2::acast(dat,province~date_sick,value.var='cases'))
-print(inc$mat[,0:10])
+
+data2 <- ilinet(region = "National")
+data2 <- data2 %>% filter( week != 53)
+data2 <- data2 %>% 
+  filter( year > 2009 & 
+          year < 2018 & 
+          !(year == 2017 & week > 18))
+data2 <- data2 %>%
+  select('region','year','week','weighted_ili', 'week_start')
+
+# Create a Preprocess Function
+preprocess_inc <- function(dat){
+  dat$time.in.year = dat$week
+  dat$t = dat$year + dat$week/52
+  inc = ObservationList$new(dat)
+  inc$formArray('region','t',val='weighted_ili',
+                dimData = list(NULL,list('week','year','time.in.year','t')),
+                metaData = list(t.step = 1/52,max.year.time = 52))
+  return(inc)
+}
+
+# Seperate into Training and Testing Data
+training_data <- data2 %>% 
+  filter( ! ((year == 2016 & week >= 19)| (year == 2017 ) ))
+testing_data <- data2 %>% 
+  filter((year == 2016 & week >= 19) | (year == 2017 & week <= 18) )
+
+training_inc <- preprocess_inc(training_data)
+testing_inc <- preprocess_inc(testing_data)
+
 ```
 
-Let's look at a sample from the new IncidenceMatrix to view the IncidenceMatrixx Format:
+Let's look at a sample from the new IncidenceMatrix to view the IncidenceMatrix Format:
 ```{r, warning=FALSE, message=FALSE}
-print(inc$mat[,0:10])
+print(training_inc$mat[,0:10])
+
 ```
+Notice that the traditional dates have been transformed to fractions of a year.
 
 #### 3. Fit the Model
-Typically, all the provinces in Thailand would be fit separately and have different forecasts. For the scope of this demo, we are only fitting and forecasting Province 10, or Bangkok Metropolis. The ForecastFramework SARIMA Model method requires the user to specify which province to model, in this case, we are modeling the first (and only) province in the dataset.
+Typically, different regions would be fit separately and have different forecasts. For the scope of this demo, we are only fitting and forecasting national data.
 
 ```{r, warning=FALSE, message=FALSE}
-# define how many provinces to model
-# this demo only has data for one province: Province 10
-prov_nums <- 1
-nmodels <- length(prov_nums)
-sarima_model$fit(inc$subset(rows = prov_nums, mutate = FALSE))
+sarimaTDmodel$fit(training_inc)
 ```
 
 ### Forecasting with the ForecastFramework SARIMA Model
 #### 4. Forecasting SARIMA
-Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the `steps` parameter. Then, you forecast with the `sarima_model$forecast()` method. This model will forecast one year into the future (26 biweeks).
+Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the `steps` parameter. Then, you forecast with the `sarimaTDmodel$forecast()` method. This model will forecast one year into the future (26 biweeks).
 
 ```{r, warning=FALSE, message=FALSE}
 # define how many provinces to model
 # this demo only has data for one province: Province 10
-steps <- 26 # forecast ahead 26 biweeks
+steps <- 52 # forecast ahead 30 epiweeks
 ```
 
 Then, use the built-in `$forecast()` function to create your forecasts. This creates a new R6 object with your forecasts and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.
 ```{r, warning=FALSE, message=FALSE}
-forecast_X <- sarima_model$forecast(steps = steps)
+forecast_X <- sarimaTDmodel$forecast(steps = steps)
 ```
 
 ### Plotting the Output
@@ -91,33 +124,31 @@ To include the `date_sick` in the  `forecast_X$data$mat` output, map the forecas
 ```{r, warning=FALSE, message=FALSE}
 # converting predictions to a dataframe to use dplyr
 # import testing dataset which has 2013 data
-data_X <- read.csv('../data/province-biweek-counts-testing.csv')
-data_X$date_sick <- as.Date(strptime(data_X$date_sick,"%m/%d/%Y")) # convert to date values
-preds_dates <- data_X %>%
-          filter(year == 2013)
+
 # add prediction dates to original forecast
-preds_df[["date_sick"]] <-as.Date(preds_dates$date_sick, format = "%d-%m-%Y")
+preds_df[["date_sick"]] <-as.Date(testing_data$week_start, format = "%d-%m-%Y")
 ```
 
 Now, we can add the forecast to the `preds_df`. Notice the `$median()` and `$quantile()` functions accompanied with `$mat` will produce matricies with the prediction medians and quantiles, respectively. 
 ```{r, warning=FALSE, message=FALSE}
 preds_df <- preds_df %>%
    mutate( 
-      pred_total_cases = as.vector(forecast_X$median()$mat),
-      pred_95_lb = as.vector(forecast_X$quantile(0.025)$mat),
-      pred_95_ub = as.vector(forecast_X$quantile(0.975)$mat),
-      pred_80_lb = as.vector(forecast_X$quantile(0.05)$mat),
-      pred_80_ub = as.vector(forecast_X$quantile(0.95)$mat),
-      pred_50_lb = as.vector(forecast_X$quantile(0.25)$mat),
-      pred_50_ub = as.vector(forecast_X$quantile(0.75)$mat)
+      pred_total_cases = as.vector(forecast_X$median(na.rm=TRUE)$mat),
+      pred_95_lb = as.vector(forecast_X$quantile(0.025,na.rm=TRUE)$mat),
+      pred_95_ub = as.vector(forecast_X$quantile(0.975,na.rm=TRUE)$mat),
+      pred_80_lb = as.vector(forecast_X$quantile(0.05,na.rm=TRUE)$mat),
+      pred_80_ub = as.vector(forecast_X$quantile(0.95,na.rm=TRUE)$mat),
+      pred_50_lb = as.vector(forecast_X$quantile(0.25,na.rm=TRUE)$mat),
+      pred_50_ub = as.vector(forecast_X$quantile(0.75,na.rm=TRUE)$mat)
    )
 print(head(preds_df,5)) # Print the first 5 rows
 ```
 
 #### 6. Plot the Forecast Output
-Finally, you are able to plot your SARIMA Forecast! Lets use `ggplot2` to create a cool plot.
-### Bangkok Metropolis SARIMA Forecast
+Finally, you are able to plot your SARIMATD Forecast! Lets use `ggplot2` to create a cool plot.
+### Weighted ILI SARIMATD Forecast
 ```{r, warning=FALSE, message=FALSE,echo=FALSE,fig.width=10, fig.height=4}
+data_X_3years <- data2 %>% filter(year > 2013)
 ggplot() +
   geom_ribbon(
     mapping = aes(x = date_sick, ymin = pred_95_lb, ymax = pred_95_ub),
@@ -138,9 +169,8 @@ ggplot() +
     color = "royalblue",
     size = 2,
     data = preds_df) +
-  geom_line(mapping = aes(x = date_sick, y = cases),
+  geom_line(mapping = aes(x = week_start, y = weighted_ili),
             size=0.7,
-            data = data_X) +
-  xlab("") + ylab("Number of Cases") +
-  coord_cartesian(ylim = c(0, 1000))
+            data = data_X_3years) +
+  xlab("") + ylab("Weighted ILI")
 ```

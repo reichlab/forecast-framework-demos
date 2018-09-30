@@ -1,9 +1,35 @@
-.author {
-   color: white;
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+@import url('https://fonts.googleapis.com/css?family=Archivo+Narrow');
+
+body {
+  background-color: white;
+  font-family: 'Source Sans Pro', Light;
+}
+
+.author em{
+   color: #273640;
+}
+
+h1{
+  color: #273640 !important;
+  font-family: 'Source Code Pro', Light;
+}
+
+h2, h2, h4, h5 {
+  font-family: 'Archivo Narrow', Bold;
+}
+h3{
+  color: #273640 !important;
 }
 
 h4 {
    font-weight:bold;
+}
+
+em {
+     font-style: normal;
+font-family: 'Source Code Pro', Light;
 }
 
 .withripple{
@@ -32,4 +58,8 @@ img.image-thumb{
 
 .large{
   width:80%;
+}
+
+.header-panel{
+  background-color: #eef2f2 !important;
 }

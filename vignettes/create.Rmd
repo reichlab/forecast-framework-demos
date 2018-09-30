@@ -357,23 +357,57 @@ SARIMATD1Model <- R6Class(
 Lets now test the model on the same biweek counts as the SARIMA demo. The output is a forecasted case count for 26 biweeks.
 ```{r, warning=FALSE, message=FALSE}
 # training data for province 10, years 2006 - 2012 
-dat <- read.csv('../data/province-biweek-counts-training.csv')
-dat$date_sick <- as.Date(strptime(dat$date_sick,"%m/%d/%Y")) # convert to date values
-inc <- IncidenceMatrix$new(1+reshape2::acast(dat,province~date_sick,value.var='cases'))
+library(ForecastFramework)
+library(R6)
+library(forecast)
+library(dplyr)
+library(ggplot2)
+library(cdcfluview)
 
-# define how many provinces to model
-# this demo only has data for one province: Province 10
-nsim <- 1000 # Number of SARIMA simulations 
-sarimaTD_model <- SARIMATD1Model$new(period = 26, nsim = nsim)
+# Source R6 Files
+library(RCurl)
 
-prov_nums <- 1
-nmodels <- length(prov_nums)
-sarimaTD_model$fit(inc$subset(rows = prov_nums, mutate = FALSE))
+# Function of Source Github Models
+source_github <- function(u) {
+  script <- getURL(u, ssl.verifypeer = FALSE)
+  eval(parse(text = script),envir=.GlobalEnv)
+}  
+# Source R6 Files
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R')
 
-# define how many provinces to model
-# this demo only has data for one province: Province 10
-steps <- 26 # forecast ahead 26 biweeks
+# Preprocess data to Inc Matrix
+data2 <- ilinet(region = "National")
+data2 <- data2 %>% filter( week != 53)
+data2 <- data2 %>% 
+  filter( year > 2009 & 
+          year < 2018 & 
+          !(year == 2017 & week > 18))
+data2 <- data2 %>%
+  select('region','year','week','weighted_ili', 'week_start')
 
+preprocess_inc <- function(dat){
+  dat$time.in.year = dat$week
+  dat$t = dat$year + dat$week/52
+  inc = ObservationList$new(dat)
+  inc$formArray('region','t',val='weighted_ili',
+                dimData = list(NULL,list('week','year','time.in.year','t')),
+                metaData = list(t.step = 1/52,max.year.time = 52))
+  return(inc)
+}
+training_data <- data2 %>% 
+  filter( ! ((year == 2016 & week >= 19)| (year == 2017 ) ))
+training_inc <- preprocess_inc(training_data)
+
+# Create new SARIMATD model
+nsim <- 10 # Number of SARIMA simulations 
+sarimaTD_model <- SARIMATD1Model$new(period = 52, nsim = nsim)
+
+# Fit SARIMATD model
+sarimaTD_model$fit(training_inc)
+
+# Forecast SARIMATD Model
+steps <- 52 # forecast ahead 26 biweeks
 forecast_X <- sarimaTD_model$forecast(steps = steps)
 
 print(forecast_X$data$mat)

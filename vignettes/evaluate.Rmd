@@ -6,43 +6,72 @@ output: html_document
 ---
 
 ### Evaluating Complex Models
-This Tutorial will demonstrate how to easily compare two models on ForecastFramework. One of the best advantages of ForecastFramework is the ability to evaluate many models at once with the same functions.
+This tutorial will demonstrate how to easily compare multiple models on ForecastFramework. One of the best advantages of ForecastFramework is the ability to evaluate many models at once with the same functions.
 
 #### Preprocessing Data
 Import libraries and source models
 ```{r, warning=FALSE, message=FALSE}
-library(R6)
 library(ForecastFramework)
-library(dplyr)
+library(R6)
 library(forecast)
+library(dplyr)
 library(ggplot2)
+library(cdcfluview)
 library(gridExtra)
+library(data.table)
 library(knitr)
+library(kableExtra)
+library(RCurl)
 
-source('../models/GamModel.R')
-source('../models/SARIMATD1Model.R')
-source('../models/ContestModel.R')
+# Function of Source Github Models
+source_github <- function(u) {
+  # read script lines from website and evaluate
+  script <- getURL(u, ssl.verifypeer = FALSE)
+  eval(parse(text = script),envir=.GlobalEnv)
+}  
+# Source R6 Files
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMAModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/GamModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R')
 ```
 
-Upload data as dataframes and convert to training/testing data. 
+Upload data from cdcfluview as dataframes. In this demo, we are only concerned with years between 2010 and 2017. We split training/testing data by excluding the 2016-17 Flu season in the training set. 
 ```{r, warning=FALSE, message=FALSE}
-dat <- read.csv('../data/province-biweek-counts.csv')
-dat$date_sick <- as.Date(strptime(dat$date_sick,"%m/%d/%Y")) # convert to date values
-training_data <- dat %>% filter(year != 2013)
-testing_data <- dat %>% filter(year == 2013)
+data <- ilinet(region = "National")
+data <- data %>% filter( week != 53)
+data <- data %>% 
+  filter( year > 2009 & year < 2018 & 
+          !(year == 2017 & week > 18))
+data <- data %>%
+  select('region','year','week','weighted_ili', 'week_start')
+
+# Seperate into Training and Testing Data
+training_data <- data %>% 
+  filter( ! ((year == 2016 & week >= 19)| (year == 2017 ) ))
+testing_data <- data %>% 
+  filter((year == 2016 & week >= 19) | (year == 2017 & week <= 18) )
 ```
 
-Preprocess both the training and testing dataframes. This function uses the `ObservationList$new()` ForecastFramework function to easily convert the dataframe to an incidence matrix. Note that `$formArray()` is the second step to complete the incidence matrix.
+A **sample of the data** we are forecasting.
 ```{r, warning=FALSE, message=FALSE}
+head(testing_data,5)
+```
+
+Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the `ObservationList$new()` ForecastFramework function to easily convert the dataframe to an incidence matrix. The `$formArray()` is the second step to complete the incidence matrix.
+
+Note: The time step in this example is 52 weeks; however, there are datasets with 26 biweeks or other time intervals used in the `t.step`, `dat$t`, and `max.year.time` values.
+```{r, warning=FALSE, message=FALSE}
+# Create a Preprocess Function
 # Convert Training and Testing data to incidence matrices
 # time.in.year is a requirement for the GAM model
 preprocess_inc <- function(dat){
-  dat$time.in.year = dat$biweek
-  dat$t = dat$year + dat$biweek/26
+  dat$time.in.year = dat$week
+  dat$t = dat$year + dat$week/52
   inc = ObservationList$new(dat)
-  inc$formArray('province','t',val='cases',
-                dimData = list(NULL,list('biweek','year','time.in.year','t')),
-                metaData = list(t.step = 1/26,max.year.time = 26))
+  inc$formArray('region','t',val='weighted_ili',
+                dimData = list(NULL,list('week','year','time.in.year','t')),
+                metaData = list(t.step = 1/52,max.year.time = 52))
   return(inc)
 }
 
@@ -52,117 +81,125 @@ testing_inc <- preprocess_inc(testing_data)
 ```
 
 #### Defining Models
-This demo will be evaluating the GAM and the [sarimaTD](https://github.com/reichlab/sarimaTD/blob/master/vignettes/sarimaTD.Rmd) forecast models on Bangkok Metropolis.
+This demo will be evaluating the GAM, SARIMA, and SARIMATD model given different evaluation metrics. 
 
 ```{r, warning=FALSE, message=FALSE}
 # Defining the Models
-nsim <- 100 # Number of simulations 
-prov_nums <- 1 # Number of Provinces
-sarima_model <- SARIMATD1Model$new(period = 26, nsim = nsim)
-gam_model <- GamModel$new(numProvinces = prov_nums,nSims = nsim)
+nsim <- 1000 # Number of simulations 
+region_num <- 1 # Only modeling the "National" region
+
+sarimaTD_model <- SARIMATD1Model$new(period = 52, nsim = nsim)
+sarima_model <- SARIMAModel$new(period = 52, nsim = nsim)
+gam_model <- GamModel$new(numProvinces = region_num,nSims = nsim)
 ```
 
 #### Fitting Models
-Each model is fit with the training data (excluding year 2013).
+Each model is fit with the training data.
 
 ```{r, warning=FALSE, message=FALSE}
 # Fit the Models 
+sarimaTD_model$fit(training_inc)
 sarima_model$fit(training_inc)
 gam_model$fit(training_inc)
 ```
 
 #### Forecasting Models
-We are forecasting year 2013 (26 biweeks) into the future.
+We are forecasting from the beginning of flu season 2016-17, 52 weeks into the future.
 ```{r, warning=FALSE, message=FALSE}
 # Forecasting the Models
-steps <- 26 # forecast ahead 26 biweeks
+steps <- 52 # forecast ahead 26 biweeks
+forecast_sarimaTD <- sarimaTD_model$forecast(step = steps)
+forecast_sarima <- sarima_model$forecast(step = steps)
 forecast_gam <- gam_model$forecast(step = steps)
-forecast_sarimaTD <- sarima_model$forecast(step = steps)
 ```
 
 #### Evaluating the Models
-Now for the fun part! Which model performed better? This question is easy to answer with ForecastFramework Models.
+Now for the fun part! How did the models perform? This question is easy to answer with ForecastFramework Models.
 
-##### Side-by-Side Forecasting Timeseries
-This function creates a time series visualization with the predicted median and quantiles displayed by a specific color. Notice `forecast$quantile(0.025)$mat` gives a matrix with a 2.5% quantile. Additionally, `forecast$median()$mat` gives the median forecast for that specific time period.
+**Important Note:** This is not a formal model evaluation or comparison. The goal of this exercise is to demonstrate different ForecastFramework techniques. Although the SARIMATD model appears to perform better than the other models in this example, a more in-depth analysis must be made before any conclusions can be made about model performance.
+
+**Side-by-Side Forecasting Timeseries**
+This function creates a time series visualization with the predicted median and quantiles displayed by a specific color. Notice `forecast$quantile(0.025)$mat` gives a matrix with a 2.5% quantile. Additionally, `forecast$mean()$mat` gives the mean forecast for that specific time period. Additionally, `na.rm=TRUE`, removes any NA values in the simulation to calculate the mean.
+
 ```{r, warning=FALSE, message=FALSE,fig.width=11, fig.height=5,}
 # Function to create time series with Visualization
 visualize_model <- function(forecast, rib_color, main_color){
-  data_X_3years <- dat %>% filter(year > 2011)
+  data_X_3years <- data %>% filter(year > 2013)
   preds_df <- data.frame(as.table(t(forecast$data$mat)))
-  preds_df[["date_sick"]] <-as.Date(testing_data$date_sick, format = "%d/%m/%Y")
+  preds_df[["week_start"]] <-as.Date(testing_data$week_start, format = "%Y-%d-%m")
   preds_df <- preds_df %>%
     mutate( 
-      pred_total_cases = as.vector(forecast$median()$mat),
-      pred_95_lb = as.vector(forecast$quantile(0.025)$mat),
-      pred_95_ub = as.vector(forecast$quantile(0.975)$mat),
-      pred_80_lb = as.vector(forecast$quantile(0.05)$mat),
-      pred_80_ub = as.vector(forecast$quantile(0.95)$mat),
-      pred_50_lb = as.vector(forecast$quantile(0.25)$mat),
-      pred_50_ub = as.vector(forecast$quantile(0.75)$mat)
+      pred_total_cases = as.vector(forecast$mean(na.rm=TRUE)$mat),
+      pred_95_lb = as.vector(forecast$quantile(0.025,na.rm=TRUE)$mat),
+      pred_95_ub = as.vector(forecast$quantile(0.975,na.rm=TRUE)$mat),
+      pred_80_lb = as.vector(forecast$quantile(0.05,na.rm=TRUE)$mat),
+      pred_80_ub = as.vector(forecast$quantile(0.95,na.rm=TRUE)$mat),
+      pred_50_lb = as.vector(forecast$quantile(0.25,na.rm=TRUE)$mat),
+      pred_50_ub = as.vector(forecast$quantile(0.75,na.rm=TRUE)$mat)
     )
   plot <- ggplot() +
     geom_ribbon(
-      mapping = aes(x = date_sick, ymin = pred_95_lb, ymax = pred_95_ub),
+      mapping = aes(x = week_start, ymin = pred_95_lb, ymax = pred_95_ub),
       fill = rib_color,
       alpha = 0.2,
       data = preds_df) +
     geom_ribbon(
-      mapping = aes(x = date_sick, ymin = pred_80_lb, ymax = pred_80_ub),
+      mapping = aes(x = week_start, ymin = pred_80_lb, ymax = pred_80_ub),
       fill = rib_color,
       alpha = 0.2,
       data = preds_df) +
     geom_ribbon(
-      mapping = aes(x = date_sick, ymin = pred_50_lb, ymax = pred_50_ub),
+      mapping = aes(x = week_start, ymin = pred_50_lb, ymax = pred_50_ub),
       fill = rib_color,
       alpha = 0.2,
       data = preds_df) +
     geom_line(
-      mapping = aes(x = date_sick, y = pred_total_cases),
+      mapping = aes(x = week_start, y = pred_total_cases),
       color = main_color,
       size = 1,
       data = preds_df) + 
-    geom_line(mapping = aes(x = date_sick, y = cases),
+    geom_line(mapping = aes(x = week_start, y = weighted_ili),
               size=0.7,
               data = data_X_3years) +
-    xlab("") + ylab("Number of Cases") +
-    coord_cartesian(ylim = c(0, 1000))
+    xlab("") + ylab("Weighted ILI") + coord_cartesian(ylim = c(0, 13))
   return(plot)
 }
 
 # Create each plot
-plot1 <- visualize_model(forecast_sarimaTD, "coral1", "red") + ggtitle("SARIMATD")
-plot2 <- visualize_model(forecast_gam, "cornflowerblue" , "blue")+ ggtitle("GAM")
+plot1 <- visualize_model(forecast_sarimaTD, "palegreen3", "forestgreen") + ggtitle("SARIMATD")
+plot2 <- visualize_model(forecast_sarima, "coral1", "red") + ggtitle("SARIMA")
+plot3 <- visualize_model(forecast_gam, "cornflowerblue" , "blue")+ ggtitle("GAM")
 
 # Display side-by-side plots
-grid.arrange(plot1, plot2, ncol=2)
+grid.arrange(plot1, plot2, plot3, ncol=3)
 ```
+Note the sparcity in the SARIMA forecast. This is one benefit of SARIMATD - the ability to provide long-term forecasts with the aid of transformations and seasonal differencing. 
 
-##### Common Evaluation Metrics
+**Common Evaluation Metrics**
 Calculating evaluation metrics is easy with ForecastFramework objects.
 ```{r, warning=FALSE, message=FALSE}
 # Mean Absolute Error
-MAE <- function(forecast_inc, test_inc){
-  err <- test_inc$mat-forecast_inc$mean()$mat
+MAE <- function(forecast_mean, test_inc){
+  err <- test_inc$mat-forecast_mean
   abs_err <- abs(err)
   return(mean(abs_err))
 }
 # Mean Squared Error
-MSE <- function(forecast_inc, test_inc){
-  err <- test_inc$mat-forecast_inc$mean()$mat
+MSE <- function(forecast_mean, test_inc){
+  err <- test_inc$mat-forecast_mean
   err_sq <- err^2
   return(mean(err_sq))
 }
 # Mean Absolute Percentage Error
-MAPE <- function(forecast_inc, test_inc){
-  err <- test_inc$mat-forecast_inc$mean()$mat
+MAPE <- function(forecast_mean, test_inc){
+  err <- test_inc$mat-forecast_mean
   abs_err <- abs(err)
   abs_err_percent <- abs_err/test_inc$mat
   return(mean(abs_err_percent)*100)
 }
 # Root Mean Squared Error
-RMSE <- function(forecast_inc, test_inc){
-  err <- test_inc$mat-forecast_inc$mean()$mat
+RMSE <- function(forecast_mean, test_inc){
+  err <- test_inc$mat-forecast_mean
   err_sq <- err^2
   mse <-mean(err_sq)
   return(sqrt(mse))
@@ -173,26 +210,34 @@ Each Model can be evaluated given the various functions:
 ```{r, warning=FALSE, message=FALSE}
 # Create Arrays with each Metric
 evaluate <- function(forecast){
-  MAE <- MAE(forecast, testing_inc)
-  MSE <- MSE(forecast, testing_inc)
-  MAPE <- MAPE(forecast, testing_inc)
-  RMSE <- RMSE(forecast, testing_inc)
+  # Replace any NaN values with 0
+  forecast_mat <- forecast$mean(na.rm=TRUE)$mat
+  forecast_mat[is.na(forecast_mat)] <- 0
+  
+  # Evaluate Performance
+  MAE <- MAE(forecast_mat, testing_inc)
+  MSE <- MSE(forecast_mat, testing_inc)
+  MAPE <- MAPE(forecast_mat, testing_inc)
+  RMSE <- RMSE(forecast_mat, testing_inc)
   return(c(MAE,MSE,MAPE,RMSE))
 }
 
 gam_eval <- evaluate(forecast_gam)
 sarimaTD_eval <- evaluate(forecast_sarimaTD)
+sarima_eval <- evaluate(forecast_sarima)
 ```
 
 Then, a final Table is made with all of the metrics in a grid format:
 ```{r echo = FALSE, results = 'asis'}
-df <- data.frame("MAE" = c(gam_eval[1],sarimaTD_eval[1]),
-                 "MSE" = c(gam_eval[2],sarimaTD_eval[2]),
-                 "MAPE" = c(gam_eval[3],sarimaTD_eval[3]),
-                 "RMSE" = c(gam_eval[4],sarimaTD_eval[4]),
+df <- data.frame("MAE" = c(sarimaTD_eval[1],sarima_eval[1],gam_eval[1]),
+                 "MSE" = c(sarimaTD_eval[2],sarima_eval[2],gam_eval[2]),
+                 "MAPE" = c(sarimaTD_eval[3],sarima_eval[3],gam_eval[3]),
+                 "RMSE" = c(sarimaTD_eval[4],sarima_eval[4],gam_eval[4]),
                  stringsAsFactors = FALSE)
-row.names(df) <- c('GAM','sarimaTD')
+row.names(df) <- c('sarimaTD','SARIMA','GAM')
 results <- t(df)
-kable(results, caption = "Model Evaluation Metrics")
+kable(results) %>%
+  kable_styling( bootstrap_options = "striped", 
+                 full_width = F, position = "center")
 ```
 

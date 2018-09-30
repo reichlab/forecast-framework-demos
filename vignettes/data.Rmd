@@ -5,30 +5,37 @@ date: "August 22, 2018"
 output: html_document
 ---
 
-### Demo Data: Dengue Fever Bangkok
-This demonstration uses Dengue Hemorrhagic Fever case count data from the Ministry of Public Health in Thailand. Normally, the data include all 76 provinces of Thailand. For simplicity, this demo only models Bangkok Metropolis (Province ID 10). Bangkok was chosen due to a lack on sparsity in the data. 
+### Demo Data: CDC U.S. Flu Season Data
+This demonstration uses state influenza statistics maintained by the U.S. Centers for Disease Control (CDC). Normally, the data include all 50 US states. For simplicity, this demo only models national data. These data are quickly retrieved with the following library: https://github.com/hrbrmstr/cdcfluview.
+
+Weighted ILI stands for Weighted Influenze-Like Illness. This is a metric for the amount of patients seen with a fever, a cough and/or sore throat, and no other causes of the symptoms over the total patient visits, and then weighted on the basis of state population. More infomation about these data can be found at: https://www.cdc.gov/flu/weekly/overview.htm.
 
 #### Raw Data
-These data include: `province`, `year`, `biweek`, `date_sick`, and `cases`. `cases` is the aggegate sum of Dengue Fever cases for that specific year and biweek.
+These data include many attributes, but we will focus on: `region`,`year`,`week`,`weighted_ili`,`week_start`. `cases` is the aggegate sum of Dengue Fever cases for that specific year and biweek.
+
 ```{r, warning=FALSE, message=FALSE}
-dat <- read.csv('../data/province-biweek-counts.csv')
-print(head(dat))
+library(cdcfluview)
+library(dplyr)
+dat <- ilinet(region = "National")
+dat <- dat %>%
+  select('region','year','week','weighted_ili', 'week_start')
+print(head(dat,6))
 ```
 
 #### Time Series
 A time series of the raw data looks like the following:
 ```{r,fig.width=7, fig.height=4, echo=FALSE, warning=FALSE, message=FALSE}
 library(ggplot2)
-dat$date_sick <- as.Date(strptime(dat$date_sick,"%m/%d/%Y")) # convert to date
+dat$date_sick <- as.Date(strptime(dat$week_start,"%m/%d/%Y")) # convert to date
 plot <- ggplot() +
-    geom_line(mapping = aes(x = date_sick, y = cases),
+    geom_line(mapping = aes(x = week_start, y = weighted_ili),
               size=0.7,
               data = dat) +
-    xlab("") + ylab("Number of Cases") +
-    coord_cartesian(ylim = c(0, 1000)) +
-    ggtitle("Dengue Fever Cases in Bangkok Metropolis")
+    xlab("") + ylab("Weighted ILI") +
+    coord_cartesian(ylim = c(0, 10)) +
+    ggtitle("National Weighted Inluenza-Like Illness")
 print(plot)
 ```
 
 #### Scope of this demo
-This demo will use these data to create a ForecastFramework model for year 2013!
+This demo will model and entire year starting from the beginning of the flu season in 2016.

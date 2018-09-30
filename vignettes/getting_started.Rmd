@@ -22,10 +22,7 @@ devtools::install_github('HopkinsIDD/ForecastFramework')
 ### The ForecastFramework Pipeline
 Before creating your own ForecastFramework models, let's dive deeper into the forecasting process with ForecastFramework.
 
-The ForecastFramework model is comprised of three parts: the data, the model, and the prediction.
-<img src="images/ff_diagram_overview.png" class="medium">
-
-These three areas of ForecastFramework make up the ForecastFramework pipeline: preprocessing, defining inputs, fitting, and predicting:
+Below is a very basic example of the ForecastFramework pipeline: preprocessing, fitting, forecasting, and evaluating:
 <img src="images/ff_pipeline.png" class="large">
 
 Each of the subsequent vignettes looks into a part of this process. However, the preprocesing stage will be included in the Defining Inputs Vignette.
@@ -35,9 +32,9 @@ Each of the subsequent vignettes looks into a part of this process. However, the
 This section will examines the raw data used in the ForecastFramework models ahead.
 * #### `Defining Inputs: Incidence Matrix`
 (*Beginner Section*) This section will define what an Incidence Matrix is, show how to format your data to be used as an Incidence Matrix, and exemplify functions of Incidence Matrices.
-* #### `Fitting and Predicting: SARIMA`
+* #### `Fitting and Forecasting: SARIMATD`
 (*Beginner Section*)This section will focus on fitting data to a SARIMA model with ForecastFramework.
-* ####`Evaluating Complex Models: SARIMATD vs. GAM`
+* ####`Evaluating Complex Models: SARIMATD, SARIMA, GAM`
 (*Intermediate Section*) This section will demonstrate evaluation metrics and techniques by comparing two complex models in ForecastFramework.
 * #### `Creating your own Model: SARIMATD`
 (*Advanced Section*) This section will demonstrate how to create your own model with ForecastFramework. NOTE: This section requires object-oriented programming knowledge.
