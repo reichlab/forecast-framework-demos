@@ -29,7 +29,7 @@ print(data_matrix)
 data_object <- IncidenceMatrix$new(data_matrix)
 ```
 
-### List IncidenceMatrix Fields
+### List of IncidenceMatrix Fields
 The IncidenceMatrix class has several fields that can be helpful for data preprocessing. 
 
 * `$mat` show data in matrix form
@@ -42,19 +42,19 @@ The IncidenceMatrix class has several fields that can be helpful for data prepro
 * `$rnames` names of matrix rows
 * `$metaData` any data not part of main matrix
 
-### Methods
+### IncidenceMatrix Methods
 In object oriented programming, a 'method' is a function for a class. In this case, the following methods are functions that are applied to IncidenceMatrix.
 
 * `$addColumns(n)` add `n` columns to matrix
 * `$addRows(n)` add `n` rows to matrix
 * `$diff(n)` difference between each column and lag `n` columns to the left
-* `$lag(n)` lag each columns by `n`
+* `$lag(n)` lag each column by `n`
 * `$head(x,y)` show `x` columns/rows from the top (`y`=1 for columns, 2 for rows)
 * `$tail(x,y)` show `x` columns/rows from the bottom (`y`=1 for columns, 2 for rows)
 * `$scale(functin(x){})` scale the matrix by some function
 * `$subset(rows=x,cols=y)` take a subset of the matrix by `x` rows and `y` columns
 
-### Field Examples
+### Examples of manipulating an IncidenceMatrix
 Let's apply some of the example functions from above to our `data_object`.
 
 **$mat** show data in matrix form:

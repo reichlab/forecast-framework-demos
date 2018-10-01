@@ -5,7 +5,7 @@ date: "August 21, 2018"
 output: html_document
 ---
 
-### Evaluating Complex Models
+### Evaluating Multiple Models
 This tutorial will demonstrate how to easily compare multiple models on ForecastFramework. One of the best advantages of ForecastFramework is the ability to evaluate many models at once with the same functions.
 
 #### Preprocessing Data
@@ -60,18 +60,19 @@ head(testing_data,5)
 
 Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the `ObservationList$new()` ForecastFramework function to easily convert the dataframe to an incidence matrix. The `$formArray()` is the second step to complete the incidence matrix.
 
-Note: The time step in this example is 52 weeks; however, there are datasets with 26 biweeks or other time intervals used in the `t.step`, `dat$t`, and `max.year.time` values.
+Note: The time step in this example is 52 weeks; however, there are datasets with other timesteps (e.g. 26 biweeks) that would impact the calculations of `t.step`, `dat$t`, and `max.year.time` values.
 ```{r, warning=FALSE, message=FALSE}
 # Create a Preprocess Function
 # Convert Training and Testing data to incidence matrices
 # time.in.year is a requirement for the GAM model
+time_step <- 52
 preprocess_inc <- function(dat){
   dat$time.in.year = dat$week
-  dat$t = dat$year + dat$week/52
+  dat$t = dat$year + dat$week/time_step
   inc = ObservationList$new(dat)
   inc$formArray('region','t',val='weighted_ili',
                 dimData = list(NULL,list('week','year','time.in.year','t')),
-                metaData = list(t.step = 1/52,max.year.time = 52))
+                metaData = list(t.step = 1/time_step, max.year.time = time_step))
   return(inc)
 }
 
@@ -81,16 +82,16 @@ testing_inc <- preprocess_inc(testing_data)
 ```
 
 #### Defining Models
-This demo will be evaluating the GAM, SARIMA, and SARIMATD model given different evaluation metrics. 
+This demo will be evaluating the Generalized Additive Model (GAM), SARIMA, and SARIMATD models given different evaluation metrics. The GAM model is based on the model used in [published real-time infectious disease forecasting research](https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004761).
 
 ```{r, warning=FALSE, message=FALSE}
 # Defining the Models
 nsim <- 1000 # Number of simulations 
 region_num <- 1 # Only modeling the "National" region
 
-sarimaTD_model <- SARIMATD1Model$new(period = 52, nsim = nsim)
-sarima_model <- SARIMAModel$new(period = 52, nsim = nsim)
-gam_model <- GamModel$new(numProvinces = region_num,nSims = nsim)
+sarimaTD_model <- SARIMATD1Model$new(period = time_step, nsim = nsim)
+sarima_model <- SARIMAModel$new(period = time_step, nsim = nsim)
+gam_model <- GamModel$new(numProvinces = region_num, nSims = nsim)
 ```
 
 #### Fitting Models
@@ -173,7 +174,7 @@ plot3 <- visualize_model(forecast_gam, "cornflowerblue" , "blue")+ ggtitle("GAM"
 # Display side-by-side plots
 grid.arrange(plot1, plot2, plot3, ncol=3)
 ```
-Note the sparcity in the SARIMA forecast. This is one benefit of SARIMATD - the ability to provide long-term forecasts with the aid of transformations and seasonal differencing. 
+Note the sparsity in the SARIMA forecast, due to some forecasted trajectories yielding undefined forecasted means (e.g. if one of the trajectories contains a non-numeric or NA value). This is one benefit of SARIMATD - the ability to provide stable long-term forecasts with the aid of transformations and seasonal differencing. It avoids some of the "brittlenes" that we have observed when just using SARIMA fitting out of the box. 
 
 **Common Evaluation Metrics**
 Calculating evaluation metrics is easy with ForecastFramework objects.

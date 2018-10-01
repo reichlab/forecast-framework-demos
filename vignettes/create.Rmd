@@ -9,7 +9,7 @@ output: html_document
 This Tutorial will demonstrate how to create a basic model with ForecastFramework. Models are created with R Object-Oriented programming, or the [R6 package](https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html). It is essential to have a basic understanding of the structure of R6 Objects, before creating a ForecastFramework package. In this tutorial, the SARIMATD model will be created step-by-step.
 
 ### SARIMATD
-SARIMATD is a model created by Evan Ray of the Reich Lab. SARIMATD uses set of wrapper functions around the forecast package to simplify estimation of and prediction from SARIMA models.
+SARIMATD is a model created by [Evan Ray](http://www.mtholyoke.edu/~eray/). SARIMATD uses set of wrapper functions around the forecast package to simplify estimation of and prediction from SARIMA models.
 
 Basic Steps of the Model:
 
@@ -53,7 +53,7 @@ model <- R6Class(
 ```
 
 #### 2. Define your `fit()` and `forecast()` functions
-The easiest way to incorporate a model into ForecastFramework is to pre-define your fit and forecast functions in a separate package, or use a separate package like the `forecast` package. The [SARMATD package](https://github.com/reichlab/sarimaTD) is hosted on Github and available for download with CRAN.
+The easiest way to incorporate a model into ForecastFramework is to pre-define your fit and forecast functions in a separate package, or use a separate package like the `forecast` package. The [SARMATD package](https://github.com/reichlab/sarimaTD) is hosted on GitHub and available for download with CRAN.
 
 The SARIMATD fit function is as follows:
 ```{r, warning=FALSE, message=FALSE, eval=FALSE}
@@ -108,7 +108,7 @@ Will become:
   private = list(
     .data = NULL,        ## every model should have this
     .models = list(),    ## specific to models that are fit separately for each location
-    .nsim = 1000,         ## models that are simulating forecasts need this
+    .nsim = 1000,        ## models that are simulating forecasts need this
     .lambda = list(),    ## specific to ARIMA models
     .period = integer(0) ## specific to SARIMA models
   ),

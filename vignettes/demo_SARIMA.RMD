@@ -4,8 +4,11 @@ author: "Katie House"
 date: "June 20, 2018"
 output: html_document
 ---
+### Overview
+This demonstration focuses on the simplest building block of any large forecasting experiment or study: how to make a forecast from one model at one time point for a single location. ForecastFramework makes it easy to generalize this process to multiple models, multiple time points and multiple locations. However, for starters, we will focus on the anatomy of a single forecast from a single model.
+
 ### About SARIMATD
-This demonstration investigates the usage of models with ForecastFramework. [SARIMATD](https://github.com/reichlab/sarimaTD) is a new R package created by Evan Ray of the Reich Lab. SARIMATD stands for SARIMA with Transformations and Seasonal Differencing. SARIMATD is a model composed of a set of wrapper functions that simplify estimating and predicting traditional SARIMA models. These wrapper functions first transform the incidence data to approximate normality, then perform seasonal differencing, and input the new incidence data to the ``forecast::auto.arima`` function from the Forecast package.
+Specifically, we will use a variation on standard [Seasonal Auto-Regressive Integrated Moving Average models](https://otexts.org/fpp2/seasonal-arima.html). [SARIMATD](https://github.com/reichlab/sarimaTD) is an R package created by [Evan Ray](http://www.mtholyoke.edu/~eray/). SARIMATD stands for SARIMA with Transformations and Seasonal Differencing. SARIMATD is a model composed of a set of wrapper functions that simplify estimating and predicting traditional SARIMA models. These wrapper functions first transform the incidence data to approximate normality, then perform seasonal differencing (if specified), and input the new incidence data to the ``auto.arima`` function from the ``forecast`` package. These simple transformations have shown improved forecasting performance of SARIMA models for infectious disease incidence by increasing the numerical stability of the model.
 
 ### Fitting the ForecastFramework SARIMATD Model
 #### 1. Import packages
@@ -36,7 +39,7 @@ source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-dem
 Now it is time to fit your SARIMATD Model! ForecastFramework makes this easy. 
 
 #### 2. Create new SARIMATDmodel Class
-In this SARIMATD model, simulation is used with `::forecast auto.arima()`. So we must define the number of simulations to use, `nsim`. We also need to define the seasonal periodicity of our data, or the `period` parameter. For this forecast, we know the periodicity is 52, because the data is weekly. once we define these parameters, they can be passed into the `SARIMATDModel()` class generator to create a new `sarimaTDmodel` class.
+In this SARIMATD model, forecasts are created by simulating multiple time-series trajectories from models fit using the `forecast::auto.arima()` function. Therefore, we must define the number of simulations to generate, `nsim`. We also need to define the seasonal periodicity of our data, or the `period` parameter. For this forecast, we know the periodicity is 52, because the data is weekly. once we define these parameters, they can be passed into the `SARIMATDModel()` class generator to create a new `sarimaTDmodel` class.
 
 ```{r, warning=FALSE, message=FALSE}
 nsim <- 10 # Number of SARIMA simulations 
@@ -92,7 +95,7 @@ Typically, different regions would be fit separately and have different forecast
 sarimaTDmodel$fit(training_inc)
 ```
 
-### Forecasting with the ForecastFramework SARIMA Model
+### Forecasting with the ForecastFramework SARIMATD Model
 #### 4. Forecasting SARIMA
 Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the `steps` parameter. Then, you forecast with the `sarimaTDmodel$forecast()` method. This model will forecast one year into the future (26 biweeks).
 
@@ -149,29 +152,25 @@ Finally, you are able to plot your SARIMATD Forecast! Lets use `ggplot2` to crea
 
 ### Weighted ILI SARIMATD Forecast
 
-```{r, warning=FALSE, message=FALSE,echo=FALSE,fig.width=10, fig.height=4}
+```{r, warning=FALSE, message=FALSE,echo=TRUE,fig.width=10, fig.height=4}
 data_X_3years <- data2 %>% filter(year > 2013)
-ggplot() +
+ggplot(data=preds_df, aes(x=date_sick)) +
   geom_ribbon(
-    mapping = aes(x = date_sick, ymin = pred_95_lb, ymax = pred_95_ub),
+    mapping = aes(ymin = pred_95_lb, ymax = pred_95_ub),
     fill = "cornflowerblue",
-    alpha = 0.2,
-    data = preds_df) +
+    alpha = 0.2) +
   geom_ribbon(
-    mapping = aes(x = date_sick, ymin = pred_80_lb, ymax = pred_80_ub),
+    mapping = aes(ymin = pred_80_lb, ymax = pred_80_ub),
     fill = "cornflowerblue",
-    alpha = 0.2,
-    data = preds_df) +
+    alpha = 0.2) +
   geom_ribbon(
-    mapping = aes(x = date_sick, ymin = pred_50_lb, ymax = pred_50_ub),
-    alpha = 0.2,
-    data = preds_df) +
+    mapping = aes(ymin = pred_50_lb, ymax = pred_50_ub),
+    alpha = 0.2) +
   geom_line(
-    mapping = aes(x = date_sick, y = pred_total_cases),
+    mapping = aes(y = pred_total_cases),
     color = "royalblue",
-    size = 2,
-    data = preds_df) +
-  geom_line(mapping = aes(x = week_start, y = weighted_ili),
+    size = 2) +
+  geom_line(aes(x = week_start, y = weighted_ili),
             size=0.7,
             data = data_X_3years) +
   xlab("") + ylab("Weighted ILI")

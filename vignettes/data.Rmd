@@ -6,12 +6,12 @@ output: html_document
 ---
 
 ### Demo Data: CDC U.S. Flu Season Data
-This demonstration uses state influenza statistics maintained by the U.S. Centers for Disease Control (CDC). Normally, the data include all 50 US states. For simplicity, this demo only models national data. These data are quickly retrieved with the following library: https://github.com/hrbrmstr/cdcfluview.
+This demonstration uses [influenza surveillance data](https://www.cdc.gov/flu/weekly/overview.htm) maintained by the U.S. Centers for Disease Control (CDC). Normally, the data include all 50 US states. For simplicity, this demo only models national data. These data are quickly retrieved with the [`cdcfluview` R package](https://github.com/hrbrmstr/cdcfluview).
 
-Weighted ILI stands for Weighted Influenze-Like Illness. This is a metric for the amount of patients seen with a fever, a cough and/or sore throat, and no other causes of the symptoms over the total patient visits, and then weighted on the basis of state population. More infomation about these data can be found at: https://www.cdc.gov/flu/weekly/overview.htm.
+One of the measures reported by the CDC for quantifying respiratory illness burden in a population is weighted influenza-like illness (wILI). This is a metric defined as the estimated percentage of all out-patient doctors office visits due to patients who present with "influenza-like illness", e.g. a fever, a cough and/or sore throat. This wILI percentage, at the national and regional levels, is calculated by taking weighted averages of state-level activty, with weights based on state population.
 
 #### Raw Data
-These data include many attributes, but we will focus on: `region`,`year`,`week`,`weighted_ili`,`week_start`. `cases` is the aggegate sum of Dengue Fever cases for that specific year and biweek.
+These data include many attributes, but we will focus on: `region`,`year`,`week`,`weighted_ili`,`week_start`. Note that `weighted_ili` is the wILI measure reported for that specific year and week.
 
 ```{r, warning=FALSE, message=FALSE}
 library(cdcfluview)
@@ -24,7 +24,7 @@ print(head(dat,6))
 
 #### Time Series
 A time series of the raw data looks like the following:
-```{r,fig.width=7, fig.height=4, echo=FALSE, warning=FALSE, message=FALSE}
+```{r,fig.width=7, fig.height=4, warning=FALSE, message=FALSE}
 library(ggplot2)
 dat$date_sick <- as.Date(strptime(dat$week_start,"%m/%d/%Y")) # convert to date
 plot <- ggplot() +
@@ -38,4 +38,4 @@ print(plot)
 ```
 
 #### Scope of this demo
-This demo will model and entire year starting from the beginning of the flu season in 2016.
+This demo will forecast an entire year's worth of wILI incidence starting from the beginning of the flu season in 2016.

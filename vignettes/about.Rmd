@@ -9,7 +9,7 @@ output: html_document
 ForecastFramework is an object-oriented R package that standardizes forecasting models. The package uses the [R6 class implementation](https://www.r-project.org/nosvn/pandoc/R6.html) to design an object-oriented framework for building forecasting models for spatial time-series data. The central goals of the ForecastFramework package are to enable **rapid model development** while **standardizing and simplifying implementation** and **performance evaluation**.
 
 ### Usage
-ForecastFramework is the primary modeling tool used at the [Reich Lab](http://reichlab.io/) at the University of Massachusetts Amherst. Specifically, it is the modeling format used in the Predict the District Challenge. 
+ForecastFramework is one of the primary forecast modeling tools used at the [Reich Lab](http://reichlab.io/) at the University of Massachusetts Amherst. As one example, we use it under the hood in generating [our real-time dengue forecasts for the Ministry of Public Health in Thailand](https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004761).
 
 The following diagram illustrates the flow of a ForecastFramework Modeling process:
 

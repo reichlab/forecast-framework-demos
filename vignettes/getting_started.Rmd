@@ -8,13 +8,13 @@ output: html_document
 ### Installation
 ForecastFramework is an open source R package hosted on [CRAN](https://cran.r-project.org/web/packages/ForecastFramework/index.html) and [Github](https://github.com/HopkinsIDD/ForecastFramework). 
 
-To install this package, either run the following commands in your [Rstudio](https://www.rstudio.com/) console:
+To install this package, run either of the following commands in your [Rstudio](https://www.rstudio.com/) console:
 ```{r eval=FALSE}
 install.packages('ForecastFramework')
 ```
-Or:
+or,
 ```{r eval=FALSE}
-require(devtools)
+library(devtools)
 devtools::install_github('HopkinsIDD/ForecastFramework')
 ```
 
@@ -25,7 +25,7 @@ Before creating your own ForecastFramework models, let's dive deeper into the fo
 Below is a very basic example of the ForecastFramework pipeline: preprocessing, fitting, forecasting, and evaluating:
 <img src="images/ff_pipeline.png" class="large">
 
-Each of the subsequent vignettes looks into a part of this process. However, the preprocesing stage will be included in the Defining Inputs Vignette.
+Each of the subsequent vignettes looks into a part of this process. Note that the preprocesing stage will be included in the Defining Inputs Vignette.
 
 ### Vignette Overview:
 * #### `The Data`
