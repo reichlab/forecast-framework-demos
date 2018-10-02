@@ -7,10 +7,10 @@ output: html_document
 ### Overview
 This demonstration focuses on the simplest building block of any large forecasting experiment or study: how to make a forecast from one model at one time point for a single location. ForecastFramework makes it easy to generalize this process to multiple models, multiple time points and multiple locations. However, for starters, we will focus on the anatomy of a single forecast from a single model.
 
-### About SARIMATD
-Specifically, we will use a variation on standard [Seasonal Auto-Regressive Integrated Moving Average models](https://otexts.org/fpp2/seasonal-arima.html). [SARIMATD](https://github.com/reichlab/sarimaTD) is an R package created by [Evan Ray](http://www.mtholyoke.edu/~eray/). SARIMATD stands for SARIMA with Transformations and Seasonal Differencing. SARIMATD is a model composed of a set of wrapper functions that simplify estimating and predicting traditional SARIMA models. These wrapper functions first transform the incidence data to approximate normality, then perform seasonal differencing (if specified), and input the new incidence data to the ``auto.arima`` function from the ``forecast`` package. These simple transformations have shown improved forecasting performance of SARIMA models for infectious disease incidence by increasing the numerical stability of the model.
+### About sarimaTD
+Specifically, we will use a variation on standard [Seasonal Auto-Regressive Integrated Moving Average models](https://otexts.org/fpp2/seasonal-arima.html). [sarimaTD](https://github.com/reichlab/sarimaTD) is an R package created by [Evan Ray](http://www.mtholyoke.edu/~eray/). sarimaTD stands for SARIMA with Transformations and Seasonal Differencing. sarimaTD is a model composed of a set of wrapper functions that simplify estimating and predicting traditional SARIMA models. These wrapper functions first transform the incidence data to approximate normality, then perform seasonal differencing (if specified), and input the new incidence data to the ``auto.arima`` function from the ``forecast`` package. These simple transformations have shown improved forecasting performance of SARIMA models for infectious disease incidence by increasing the numerical stability of the model.
 
-### Fitting the ForecastFramework SARIMATD Model
+### Fitting the ForecastFramework sarimaTD Model
 #### 1. Import packages
 First you must import all the required libraries. Note that ForecastFramework doesn't requre `dplyr` or `ggplot2`, but they will be used to make a figure at the end of the demo.
 
@@ -36,10 +36,10 @@ source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-dem
 source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R')
 ```
 
-Now it is time to fit your SARIMATD Model! ForecastFramework makes this easy. 
+Now it is time to fit your sarimaTD Model! ForecastFramework makes this easy. 
 
-#### 2. Create new SARIMATDmodel Class
-In this SARIMATD model, forecasts are created by simulating multiple time-series trajectories from models fit using the `forecast::auto.arima()` function. Therefore, we must define the number of simulations to generate, `nsim`. We also need to define the seasonal periodicity of our data, or the `period` parameter. For this forecast, we know the periodicity is 52, because the data is weekly. once we define these parameters, they can be passed into the `SARIMATDModel()` class generator to create a new `sarimaTDmodel` class.
+#### 2. Create new sarimaTDmodel Class
+In this sarimaTD model, forecasts are created by simulating multiple time-series trajectories from models fit using the `forecast::auto.arima()` function. Therefore, we must define the number of simulations to generate, `nsim`. We also need to define the seasonal periodicity of our data, or the `period` parameter. For this forecast, we know the periodicity is 52, because the data is weekly. once we define these parameters, they can be passed into the `sarimaTDModel()` class generator to create a new `sarimaTDmodel` class.
 
 ```{r, warning=FALSE, message=FALSE}
 nsim <- 10 # Number of SARIMA simulations 
@@ -47,7 +47,7 @@ sarimaTDmodel <- SARIMATD1Model$new(period = 52, nsim = nsim)
 ```
 
 #### 3. Import CDC Flu Data
-To import the fluview data, use the `ilinet()` command. The data is then filtered to remove unneeded weeks and years. Then, the data is stored as an `IncidenceMatrix()`. An incidence matrix represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. IncidenceMatrix is the preferred input for ForecastFramework Models.
+To import the fluview data, use the `ilinet()` command. The data is then filtered to remove unneeded weeks and years. Then, the data is stored as an `IncidenceMatrix`. An `IncidenceMatrix` represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. `IncidenceMatrix` is the preferred input for ForecastFramework Models.
 ```{r, warning=FALSE, message=FALSE}
 
 data2 <- ilinet(region = "National")
@@ -81,7 +81,7 @@ testing_inc <- preprocess_inc(testing_data)
 
 ```
 
-Let's look at a sample from the new IncidenceMatrix to view the IncidenceMatrix Format:
+Let's look at a sample from the new `IncidenceMatrix` to view the `IncidenceMatrix` Format:
 ```{r, warning=FALSE, message=FALSE}
 print(training_inc$mat[,0:10])
 
@@ -95,7 +95,7 @@ Typically, different regions would be fit separately and have different forecast
 sarimaTDmodel$fit(training_inc)
 ```
 
-### Forecasting with the ForecastFramework SARIMATD Model
+### Forecasting with the ForecastFramework sarimaTD Model
 #### 4. Forecasting SARIMA
 Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the `steps` parameter. Then, you forecast with the `sarimaTDmodel$forecast()` method. This model will forecast one year into the future (26 biweeks).
 
@@ -148,9 +148,9 @@ print(head(preds_df,5)) # Print the first 5 rows
 ```
 
 #### 6. Plot the Forecast Output
-Finally, you are able to plot your SARIMATD Forecast! Lets use `ggplot2` to create a cool plot.
+Finally, you are able to plot your sarimaTD Forecast! Lets use `ggplot2` to create a cool plot.
 
-### Weighted ILI SARIMATD Forecast
+### Weighted ILI sarimaTD Forecast
 
 ```{r, warning=FALSE, message=FALSE,echo=TRUE,fig.width=10, fig.height=4}
 data_X_3years <- data2 %>% filter(year > 2013)
@@ -175,3 +175,5 @@ ggplot(data=preds_df, aes(x=date_sick)) +
             data = data_X_3years) +
   xlab("") + ylab("Weighted ILI")
 ```
+
+<a href="http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to Evaluating Multiple Models</button></a>

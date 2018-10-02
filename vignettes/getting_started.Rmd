@@ -5,7 +5,7 @@ date: "August 12, 2018"
 output: html_document
 ---
 
-### Installation
+### Installation of Forecast Framework
 ForecastFramework is an open source R package hosted on [CRAN](https://cran.r-project.org/web/packages/ForecastFramework/index.html) and [Github](https://github.com/HopkinsIDD/ForecastFramework). 
 
 To install this package, run either of the following commands in your [Rstudio](https://www.rstudio.com/) console:
@@ -18,23 +18,64 @@ library(devtools)
 devtools::install_github('HopkinsIDD/ForecastFramework')
 ```
 
+## Run this to ensure you have all the Dependencies
+Run these lines of code before performing the vignette. NOTE: you only need to run this once. This script installs all of the necessary R packages for the rest of the demo.
+```{r eval=FALSE}
+install.packages(c('R6','devtools','forecast','ggplot2',
+                   'gridExtra','data.table','knitr','kableExtra','RCurl'))
+```
+Then run these commands:
+```{r eval=FALSE}
+library(devtools)
+devtools::install_github('HopkinsIDD/ForecastFramework')
+devtools::install_github('reichlab/sarimaTD') 
+devtools::install_github("hrbrmstr/cdcfluview")
+```
+Test your packages are correctly installed with these commands:
+```{r eval=FALSE}
+library(ForecastFramework)
+library(R6)
+library(forecast)
+library(dplyr)
+library(ggplot2)
+library(cdcfluview)
+library(gridExtra)
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(RCurl)
+
+# Function of Source Github Models
+source_github <- function(u) {
+  # read script lines from website and evaluate
+  script <- getURL(u, ssl.verifypeer = FALSE)
+  eval(parse(text = script),envir=.GlobalEnv)
+}  
+# Source R6 Files
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMAModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/GamModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R')
+```
 
 ### The ForecastFramework Pipeline
 Before creating your own ForecastFramework models, let's dive deeper into the forecasting process with ForecastFramework.
 
-Below is a very basic example of the ForecastFramework pipeline: preprocessing, fitting, forecasting, and evaluating:
+Below is a very basic example of the ForecastFramework pipeline: preprocessing, defining inputs, fitting, forecasting, and evaluating:
 <img src="images/ff_pipeline.png" class="large">
 
 Each of the subsequent vignettes looks into a part of this process. Note that the preprocesing stage will be included in the Defining Inputs Vignette.
 
 ### Vignette Overview:
-* #### `The Data`
+* #### [The Data](http://reichlab.io/forecast-framework-demos/#the-data-1)
 This section will examines the raw data used in the ForecastFramework models ahead.
-* #### `Defining Inputs: Incidence Matrix`
+* #### [Defining Inputs: Incidence Matrix](http://reichlab.io/forecast-framework-demos/#defining-inputs-incidence-matrix-1)
 (*Beginner Section*) This section will define what an Incidence Matrix is, show how to format your data to be used as an Incidence Matrix, and exemplify functions of Incidence Matrices.
-* #### `Fitting and Forecasting: SARIMATD`
+* #### [Fitting and Forecasting: SARIMATD](http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1)
 (*Beginner Section*)This section will focus on fitting data to a SARIMA model with ForecastFramework.
-* ####`Evaluating Complex Models: SARIMATD, SARIMA, GAM`
+* #### [Evaluating Complex Models: SARIMATD, SARIMA, GAM](http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1)
 (*Intermediate Section*) This section will demonstrate evaluation metrics and techniques by comparing two complex models in ForecastFramework.
-* #### `Creating your own Model: SARIMATD`
+* #### [Creating your own Model: SARIMATD](http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1)
 (*Advanced Section*) This section will demonstrate how to create your own model with ForecastFramework. NOTE: This section requires object-oriented programming knowledge.
+
+<a href="http://reichlab.io/forecast-framework-demos/#the-data-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to The Data</button></a>

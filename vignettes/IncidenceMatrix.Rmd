@@ -5,13 +5,13 @@ date: "June 8, 2018"
 output: html_document
 ---
 
-### What is an IncidenceMatrix?
-ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called IncidenceMatrix. IncidenceMatrices are the stanard inputs for ForecastFramework models. This vignette describes how to create an IncidenceMatrix and some key fields and methods relating to their usage.
+### What is an `IncidenceMatrix`?
+ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called `IncidenceMatrix`. IncidenceMatrices are the stanard inputs for ForecastFramework models. This vignette describes how to create an `IncidenceMatrix` and some key fields and methods relating to their usage.
 
-### IncidenceMatrix in the ForecastFramework Process
+### `IncidenceMatrix` in the ForecastFramework Process
 <img src="images/IncidenceMatrixDia.png" class="large">
 
-### How to create an IncidenceMatrix
+### How to create an `IncidenceMatrix`
 1. Make sure you import `ForecastFramework` and `R6`
 ```{r}
 library(R6)
@@ -24,13 +24,13 @@ data_matrix <- matrix(1:9,3,3)
 print(data_matrix)
 ```
 
-3. Create a new IncidenceMatrix object with your data
+3. Create a new `IncidenceMatrix` object with your data
 ```{r}
 data_object <- IncidenceMatrix$new(data_matrix)
 ```
 
-### List of IncidenceMatrix Fields
-The IncidenceMatrix class has several fields that can be helpful for data preprocessing. 
+### List of `IncidenceMatrix` Fields
+The `IncidenceMatrix` class has several fields that can be helpful for data preprocessing. 
 
 * `$mat` show data in matrix form
 * `$nrow` number of rows
@@ -42,8 +42,8 @@ The IncidenceMatrix class has several fields that can be helpful for data prepro
 * `$rnames` names of matrix rows
 * `$metaData` any data not part of main matrix
 
-### IncidenceMatrix Methods
-In object oriented programming, a 'method' is a function for a class. In this case, the following methods are functions that are applied to IncidenceMatrix.
+### `IncidenceMatrix` Methods
+In object oriented programming, a 'method' is a function for a class. In this case, the following methods are functions that are applied to `IncidenceMatrix`.
 
 * `$addColumns(n)` add `n` columns to matrix
 * `$addRows(n)` add `n` rows to matrix
@@ -54,7 +54,7 @@ In object oriented programming, a 'method' is a function for a class. In this ca
 * `$scale(functin(x){})` scale the matrix by some function
 * `$subset(rows=x,cols=y)` take a subset of the matrix by `x` rows and `y` columns
 
-### Examples of manipulating an IncidenceMatrix
+### Examples of manipulating an `IncidenceMatrix`
 Let's apply some of the example functions from above to our `data_object`.
 
 **$mat** show data in matrix form:
@@ -81,3 +81,5 @@ data_object$addColumns(2)
 data_object$colData
 data_object$mat
 ```
+
+<a href="http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to Fitting and Forecasting</button></a>

@@ -39,3 +39,6 @@ print(plot)
 
 #### Scope of this demo
 This demo will forecast an entire year's worth of wILI incidence starting from the beginning of the flu season in 2016.
+
+
+<a href="http://reichlab.io/forecast-framework-demos/#defining-inputs-incidence-matrix-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to Defining the Inputs</button></a>

@@ -58,7 +58,7 @@ A **sample of the data** we are forecasting.
 head(testing_data,5)
 ```
 
-Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the `ObservationList$new()` ForecastFramework function to easily convert the dataframe to an incidence matrix. The `$formArray()` is the second step to complete the incidence matrix.
+Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the `ObservationList$new()` ForecastFramework function to easily convert the dataframe to an `IncidenceMatrix`. The `$formArray()` is the second step to complete the `IncidenceMatrix`.
 
 Note: The time step in this example is 52 weeks; however, there are datasets with other timesteps (e.g. 26 biweeks) that would impact the calculations of `t.step`, `dat$t`, and `max.year.time` values.
 ```{r, warning=FALSE, message=FALSE}
@@ -82,7 +82,7 @@ testing_inc <- preprocess_inc(testing_data)
 ```
 
 #### Defining Models
-This demo will be evaluating the Generalized Additive Model (GAM), SARIMA, and SARIMATD models given different evaluation metrics. The GAM model is based on the model used in [published real-time infectious disease forecasting research](https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004761).
+This demo will be evaluating the Generalized Additive Model (GAM), SARIMA, and sarimaTD models given different evaluation metrics. The GAM model is based on the model used in [published real-time infectious disease forecasting research](https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004761).
 
 ```{r, warning=FALSE, message=FALSE}
 # Defining the Models
@@ -117,7 +117,7 @@ forecast_gam <- gam_model$forecast(step = steps)
 #### Evaluating the Models
 Now for the fun part! How did the models perform? This question is easy to answer with ForecastFramework Models.
 
-**Important Note:** This is not a formal model evaluation or comparison. The goal of this exercise is to demonstrate different ForecastFramework techniques. Although the SARIMATD model appears to perform better than the other models in this example, a more in-depth analysis must be made before any conclusions can be made about model performance.
+**Important Note:** This is not a formal model evaluation or comparison. The goal of this exercise is to demonstrate different ForecastFramework techniques. Although the sarimaTD model appears to perform better than the other models in this example, a more in-depth analysis must be made before any conclusions can be made about model performance.
 
 **Side-by-Side Forecasting Timeseries**
 This function creates a time series visualization with the predicted median and quantiles displayed by a specific color. Notice `forecast$quantile(0.025)$mat` gives a matrix with a 2.5% quantile. Additionally, `forecast$mean()$mat` gives the mean forecast for that specific time period. Additionally, `na.rm=TRUE`, removes any NA values in the simulation to calculate the mean.
@@ -167,14 +167,14 @@ visualize_model <- function(forecast, rib_color, main_color){
 }
 
 # Create each plot
-plot1 <- visualize_model(forecast_sarimaTD, "palegreen3", "forestgreen") + ggtitle("SARIMATD")
+plot1 <- visualize_model(forecast_sarimaTD, "palegreen3", "forestgreen") + ggtitle("sarimaTD")
 plot2 <- visualize_model(forecast_sarima, "coral1", "red") + ggtitle("SARIMA")
 plot3 <- visualize_model(forecast_gam, "cornflowerblue" , "blue")+ ggtitle("GAM")
 
 # Display side-by-side plots
 grid.arrange(plot1, plot2, plot3, ncol=3)
 ```
-Note the sparsity in the SARIMA forecast, due to some forecasted trajectories yielding undefined forecasted means (e.g. if one of the trajectories contains a non-numeric or NA value). This is one benefit of SARIMATD - the ability to provide stable long-term forecasts with the aid of transformations and seasonal differencing. It avoids some of the "brittlenes" that we have observed when just using SARIMA fitting out of the box. 
+Note the sparsity in the SARIMA forecast, due to some forecasted trajectories yielding undefined forecasted means (e.g. if one of the trajectories contains a non-numeric or NA value). This is one benefit of sarimaTD - the ability to provide stable long-term forecasts with the aid of transformations and seasonal differencing. It avoids some of the "brittlenes" that we have observed when just using SARIMA fitting out of the box. 
 
 **Common Evaluation Metrics**
 Calculating evaluation metrics is easy with ForecastFramework objects.
@@ -242,3 +242,5 @@ kable(results) %>%
                  full_width = F, position = "center")
 ```
 
+
+<a href="http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to Creating your own Model</button></a>

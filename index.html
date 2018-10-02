@@ -109,9 +109,9 @@ $(document).ready(function () {
         <li><a href="#getting-started"><strong>Getting Started</strong></a></li>
         <li><a href="#the-data-1"><strong>The Data</strong></a></li>
         <li><a href="#defining-inputs-incidence-matrix-1"><strong>Defining Inputs</strong> Incidence Matrix</a></li>
-        <li><a href="#fitting-and-forecasting-sarimatd-1"><strong>Fitting and Forecasting</strong> SARIMATD</a></li>
-        <li><a href="#evaluating-complex-models-sarimatd-sarima-gam-1"><strong>Evaluating Complex Models</strong> SARIMATD, SARIMA, GAM</a></li>
-        <li><a href="#creating-your-own-model-sarimatd-1"><strong>Creating your own Model</strong> SARIMATD</a></li>
+        <li><a href="#fitting-and-forecasting"><strong>Fitting and Forecasting</strong></a></li>
+        <li><a href="#evaluating-multiple-models"><strong>Evaluating Multiple Models</strong></a></li>
+        <li><a href="#creating-your-own-model"><strong>Creating your own Model</strong></a></li>
         </ul>
       </nav>
      <div class="pages col-xs-9">
@@ -128,7 +128,7 @@ $(document).ready(function () {
 </div>
 <div id="usage" class="section level3">
 <h3>Usage</h3>
-<p>ForecastFramework is the primary modeling tool used at the <a href="http://reichlab.io/">Reich Lab</a> at the University of Massachusetts Amherst. Specifically, it is the modeling format used in the Predict the District Challenge.</p>
+<p>ForecastFramework is one of the primary forecast modeling tools used at the <a href="http://reichlab.io/">Reich Lab</a> at the University of Massachusetts Amherst. As one example, we use it under the hood in generating <a href="https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004761">our real-time dengue forecasts for the Ministry of Public Health in Thailand</a>.</p>
 <p>The following diagram illustrates the flow of a ForecastFramework Modeling process:</p>
 <p><img src="images/ff_diagram_overview.png" class="large"></p>
 </div>
@@ -136,50 +136,95 @@ $(document).ready(function () {
 <h3>Creation</h3>
 <p>ForecastFramework was created by Joshua Kaminsky of the <a href="http://www.iddynamics.jhsph.edu/">Infectious Disease Dynamics Group</a> at Johns Hopkins University. This demo was created by <a href="www.github.com/katiehouse3">Katie House</a>.</p>
 <p><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>
+<a href="http://reichlab.io/forecast-framework-demos/#getting-started">
+<button type="button" class="btn btn-raised btn-secondary">
+Proceed to Getting Started
+</button>
+<p></a></p>
 </div>
 </div>
 <div id="getting-started" class="section level1">
 <h1><strong>Getting Started</strong></h1>
-<div id="installation" class="section level3">
-<h3>Installation</h3>
+<div id="installation-of-forecast-framework" class="section level3">
+<h3>Installation of Forecast Framework</h3>
 <p>ForecastFramework is an open source R package hosted on <a href="https://cran.r-project.org/web/packages/ForecastFramework/index.html">CRAN</a> and <a href="https://github.com/HopkinsIDD/ForecastFramework">Github</a>.</p>
-<p>To install this package, either run the following commands in your <a href="https://www.rstudio.com/">Rstudio</a> console:</p>
+<p>To install this package, run either of the following commands in your <a href="https://www.rstudio.com/">Rstudio</a> console:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&#39;ForecastFramework&#39;</span>)</code></pre></div>
-<p>Or:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(devtools)
+<p>or,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
 devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;HopkinsIDD/ForecastFramework&#39;</span>)</code></pre></div>
 </div>
+<div id="run-this-to-ensure-you-have-all-the-dependencies" class="section level2">
+<h2>Run this to ensure you have all the Dependencies</h2>
+<p>Run these lines of code before performing the vignette. NOTE: you only need to run this once. This script installs all of the necessary R packages for the rest of the demo.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&#39;R6&#39;</span>,<span class="st">&#39;devtools&#39;</span>,<span class="st">&#39;forecast&#39;</span>,<span class="st">&#39;ggplot2&#39;</span>,
+                   <span class="st">&#39;gridExtra&#39;</span>,<span class="st">&#39;data.table&#39;</span>,<span class="st">&#39;knitr&#39;</span>,<span class="st">&#39;kableExtra&#39;</span>,<span class="st">&#39;RCurl&#39;</span>))</code></pre></div>
+<p>Then run these commands:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;HopkinsIDD/ForecastFramework&#39;</span>)
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;reichlab/sarimaTD&#39;</span>) 
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;hrbrmstr/cdcfluview&quot;</span>)</code></pre></div>
+<p>Test your packages are correctly installed with these commands:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ForecastFramework)
+<span class="kw">library</span>(R6)
+<span class="kw">library</span>(forecast)
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(cdcfluview)
+<span class="kw">library</span>(gridExtra)
+<span class="kw">library</span>(data.table)
+<span class="kw">library</span>(knitr)
+<span class="kw">library</span>(kableExtra)
+<span class="kw">library</span>(RCurl)
+
+<span class="co"># Function of Source Github Models</span>
+source_github &lt;-<span class="st"> </span><span class="cf">function</span>(u) {
+  <span class="co"># read script lines from website and evaluate</span>
+  script &lt;-<span class="st"> </span><span class="kw">getURL</span>(u, <span class="dt">ssl.verifypeer =</span> <span class="ot">FALSE</span>)
+  <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> script),<span class="dt">envir=</span>.GlobalEnv)
+}  
+<span class="co"># Source R6 Files</span>
+<span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R&#39;</span>)
+<span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMAModel.R&#39;</span>)
+<span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/GamModel.R&#39;</span>)
+<span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R&#39;</span>)</code></pre></div>
 <div id="the-forecastframework-pipeline" class="section level3">
 <h3>The ForecastFramework Pipeline</h3>
 <p>Before creating your own ForecastFramework models, let’s dive deeper into the forecasting process with ForecastFramework.</p>
-<p>Below is a very basic example of the ForecastFramework pipeline: preprocessing, fitting, forecasting, and evaluating: <img src="images/ff_pipeline.png" class="large"></p>
-<p>Each of the subsequent vignettes looks into a part of this process. However, the preprocesing stage will be included in the Defining Inputs Vignette.</p>
+<p>Below is a very basic example of the ForecastFramework pipeline: preprocessing, defining inputs, fitting, forecasting, and evaluating: <img src="images/ff_pipeline.png" class="large"></p>
+<p>Each of the subsequent vignettes looks into a part of this process. Note that the preprocesing stage will be included in the Defining Inputs Vignette.</p>
 </div>
 <div id="vignette-overview" class="section level3">
 <h3>Vignette Overview:</h3>
 <ul>
-<li><h4 id="the-data"><code>The Data</code></h4>
+<li><h4 id="the-data"><a href="http://reichlab.io/forecast-framework-demos/#the-data-1">The Data</a></h4>
 This section will examines the raw data used in the ForecastFramework models ahead.</li>
-<li><h4 id="defining-inputs-incidence-matrix"><code>Defining Inputs: Incidence Matrix</code></h4>
+<li><h4 id="defining-inputs-incidence-matrix"><a href="http://reichlab.io/forecast-framework-demos/#defining-inputs-incidence-matrix-1">Defining Inputs: Incidence Matrix</a></h4>
 (<em>Beginner Section</em>) This section will define what an Incidence Matrix is, show how to format your data to be used as an Incidence Matrix, and exemplify functions of Incidence Matrices.</li>
-<li><h4 id="fitting-and-forecasting-sarimatd"><code>Fitting and Forecasting: SARIMATD</code></h4>
+<li><h4 id="fitting-and-forecasting-sarimatd"><a href="http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1">Fitting and Forecasting: SARIMATD</a></h4>
 (<em>Beginner Section</em>)This section will focus on fitting data to a SARIMA model with ForecastFramework.</li>
-<li><h4 id="evaluating-complex-models-sarimatd-sarima-gam"><code>Evaluating Complex Models: SARIMATD, SARIMA, GAM</code></h4>
+<li><h4 id="evaluating-complex-models-sarimatd-sarima-gam"><a href="http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1">Evaluating Complex Models: SARIMATD, SARIMA, GAM</a></h4>
 (<em>Intermediate Section</em>) This section will demonstrate evaluation metrics and techniques by comparing two complex models in ForecastFramework.</li>
-<li><h4 id="creating-your-own-model-sarimatd"><code>Creating your own Model: SARIMATD</code></h4>
+<li><h4 id="creating-your-own-model-sarimatd"><a href="http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1">Creating your own Model: SARIMATD</a></h4>
 (<em>Advanced Section</em>) This section will demonstrate how to create your own model with ForecastFramework. NOTE: This section requires object-oriented programming knowledge.</li>
 </ul>
+<a href="http://reichlab.io/forecast-framework-demos/#the-data-1">
+<button type="button" class="btn btn-raised btn-secondary">
+Proceed to The Data
+</button>
+<p></a></p>
+</div>
 </div>
 </div>
 <div id="the-data-1" class="section level1">
 <h1><strong>The Data</strong></h1>
 <div id="demo-data-cdc-u.s.-flu-season-data" class="section level3">
 <h3>Demo Data: CDC U.S. Flu Season Data</h3>
-<p>This demonstration uses state influenza statistics maintained by the U.S. Centers for Disease Control (CDC). Normally, the data include all 50 US states. For simplicity, this demo only models national data. These data are quickly retrieved with the following library: <a href="https://github.com/hrbrmstr/cdcfluview" class="uri">https://github.com/hrbrmstr/cdcfluview</a>.</p>
-<p>Weighted ILI stands for Weighted Influenze-Like Illness. This is a metric for the amount of patients seen with a fever, a cough and/or sore throat, and no other causes of the symptoms over the total patient visits, and then weighted on the basis of state population. More infomation about these data can be found at: <a href="https://www.cdc.gov/flu/weekly/overview.htm" class="uri">https://www.cdc.gov/flu/weekly/overview.htm</a>.</p>
+<p>This demonstration uses <a href="https://www.cdc.gov/flu/weekly/overview.htm">influenza surveillance data</a> maintained by the U.S. Centers for Disease Control (CDC). Normally, the data include all 50 US states. For simplicity, this demo only models national data. These data are quickly retrieved with the <a href="https://github.com/hrbrmstr/cdcfluview"><code>cdcfluview</code> R package</a>.</p>
+<p>One of the measures reported by the CDC for quantifying respiratory illness burden in a population is weighted influenza-like illness (wILI). This is a metric defined as the estimated percentage of all out-patient doctors office visits due to patients who present with “influenza-like illness”, e.g. a fever, a cough and/or sore throat. This wILI percentage, at the national and regional levels, is calculated by taking weighted averages of state-level activty, with weights based on state population.</p>
 <div id="raw-data" class="section level4">
 <h4>Raw Data</h4>
-<p>These data include many attributes, but we will focus on: <code>region</code>,<code>year</code>,<code>week</code>,<code>weighted_ili</code>,<code>week_start</code>. <code>cases</code> is the aggegate sum of Dengue Fever cases for that specific year and biweek.</p>
+<p>These data include many attributes, but we will focus on: <code>region</code>,<code>year</code>,<code>week</code>,<code>weighted_ili</code>,<code>week_start</code>. Note that <code>weighted_ili</code> is the wILI measure reported for that specific year and week.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cdcfluview)
 <span class="kw">library</span>(dplyr)
 dat &lt;-<span class="st"> </span><span class="kw">ilinet</span>(<span class="dt">region =</span> <span class="st">&quot;National&quot;</span>)
@@ -198,31 +243,48 @@ dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span>
 </div>
 <div id="time-series" class="section level4">
 <h4>Time Series</h4>
-<p>A time series of the raw data looks like the following: <img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>A time series of the raw data looks like the following:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+dat<span class="op">$</span>date_sick &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="kw">strptime</span>(dat<span class="op">$</span>week_start,<span class="st">&quot;%m/%d/%Y&quot;</span>)) <span class="co"># convert to date</span>
+plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> week_start, <span class="dt">y =</span> weighted_ili),
+              <span class="dt">size=</span><span class="fl">0.7</span>,
+              <span class="dt">data =</span> dat) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Weighted ILI&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;National Weighted Inluenza-Like Illness&quot;</span>)
+<span class="kw">print</span>(plot)</code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="scope-of-this-demo" class="section level4">
 <h4>Scope of this demo</h4>
-<p>This demo will model and entire year starting from the beginning of the flu season in 2016.</p>
+<p>This demo will forecast an entire year’s worth of wILI incidence starting from the beginning of the flu season in 2016.</p>
+<a href="http://reichlab.io/forecast-framework-demos/#defining-inputs-incidence-matrix-1">
+<button type="button" class="btn btn-raised btn-secondary">
+Proceed to Defining the Inputs
+</button>
+<p></a></p>
 </div>
 </div>
 </div>
 <div id="defining-inputs-incidence-matrix-1" class="section level1">
 <h1><strong>Defining Inputs</strong> Incidence Matrix</h1>
 <div id="what-is-an-incidencematrix" class="section level3">
-<h3>What is an IncidenceMatrix?</h3>
-<p>ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called IncidenceMatrix. IncidenceMatrices are the stanard inputs for ForecastFramework models. This vignette describes how to create an IncidenceMatrix and some key fields and methods relating to their usage.</p>
+<h3>What is an <code>IncidenceMatrix</code>?</h3>
+<p>ForecastFramework makes it easy to quickly manipulate forecasting data. To do this, create an object from a class called <code>IncidenceMatrix</code>. IncidenceMatrices are the stanard inputs for ForecastFramework models. This vignette describes how to create an <code>IncidenceMatrix</code> and some key fields and methods relating to their usage.</p>
 </div>
 <div id="incidencematrix-in-the-forecastframework-process" class="section level3">
-<h3>IncidenceMatrix in the ForecastFramework Process</h3>
+<h3><code>IncidenceMatrix</code> in the ForecastFramework Process</h3>
 <p><img src="images/IncidenceMatrixDia.png" class="large"></p>
 </div>
 <div id="how-to-create-an-incidencematrix" class="section level3">
-<h3>How to create an IncidenceMatrix</h3>
+<h3>How to create an <code>IncidenceMatrix</code></h3>
 <ol style="list-style-type: decimal">
 <li>Make sure you import <code>ForecastFramework</code> and <code>R6</code></li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(R6)
-<span class="kw">library</span>(ForecastFramework)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(R6)</code></pre></div>
+<pre><code>## Warning: package &#39;R6&#39; was built under R version 3.5.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ForecastFramework)</code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Create a new matrix with your data</li>
 </ol>
@@ -233,13 +295,13 @@ dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span>
 ## [2,]    2    5    8
 ## [3,]    3    6    9</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Create a new IncidenceMatrix object with your data</li>
+<li>Create a new <code>IncidenceMatrix</code> object with your data</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object &lt;-<span class="st"> </span>IncidenceMatrix<span class="op">$</span><span class="kw">new</span>(data_matrix)</code></pre></div>
 </div>
-<div id="list-incidencematrix-fields" class="section level3">
-<h3>List IncidenceMatrix Fields</h3>
-<p>The IncidenceMatrix class has several fields that can be helpful for data preprocessing.</p>
+<div id="list-of-incidencematrix-fields" class="section level3">
+<h3>List of <code>IncidenceMatrix</code> Fields</h3>
+<p>The <code>IncidenceMatrix</code> class has several fields that can be helpful for data preprocessing.</p>
 <ul>
 <li><code>$mat</code> show data in matrix form</li>
 <li><code>$nrow</code> number of rows</li>
@@ -252,22 +314,22 @@ dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span>
 <li><code>$metaData</code> any data not part of main matrix</li>
 </ul>
 </div>
-<div id="methods" class="section level3">
-<h3>Methods</h3>
-<p>In object oriented programming, a ‘method’ is a function for a class. In this case, the following methods are functions that are applied to IncidenceMatrix.</p>
+<div id="incidencematrix-methods" class="section level3">
+<h3><code>IncidenceMatrix</code> Methods</h3>
+<p>In object oriented programming, a ‘method’ is a function for a class. In this case, the following methods are functions that are applied to <code>IncidenceMatrix</code>.</p>
 <ul>
 <li><code>$addColumns(n)</code> add <code>n</code> columns to matrix</li>
 <li><code>$addRows(n)</code> add <code>n</code> rows to matrix</li>
 <li><code>$diff(n)</code> difference between each column and lag <code>n</code> columns to the left</li>
-<li><code>$lag(n)</code> lag each columns by <code>n</code></li>
+<li><code>$lag(n)</code> lag each column by <code>n</code></li>
 <li><code>$head(x,y)</code> show <code>x</code> columns/rows from the top (<code>y</code>=1 for columns, 2 for rows)</li>
 <li><code>$tail(x,y)</code> show <code>x</code> columns/rows from the bottom (<code>y</code>=1 for columns, 2 for rows)</li>
 <li><code>$scale(functin(x){})</code> scale the matrix by some function</li>
 <li><code>$subset(rows=x,cols=y)</code> take a subset of the matrix by <code>x</code> rows and <code>y</code> columns</li>
 </ul>
 </div>
-<div id="field-examples" class="section level3">
-<h3>Field Examples</h3>
+<div id="examples-of-manipulating-an-incidencematrix" class="section level3">
+<h3>Examples of manipulating an <code>IncidenceMatrix</code></h3>
 <p>Let’s apply some of the example functions from above to our <code>data_object</code>.</p>
 <p><strong>$mat</strong> show data in matrix form:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_object<span class="op">$</span>mat</code></pre></div>
@@ -297,16 +359,25 @@ data_object<span class="op">$</span>colData</code></pre></div>
 ## [1,]    1    4    7   NA   NA
 ## [2,]    2    5    8   NA   NA
 ## [3,]    3    6    9   NA   NA</code></pre>
+<a href="http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1">
+<button type="button" class="btn btn-raised btn-secondary">
+Proceed to Fitting and Forecasting
+</button>
+<p></a></p>
 </div>
 </div>
-<div id="fitting-and-forecasting-sarimatd-1" class="section level1">
-<h1><strong>Fitting and Forecasting</strong> SARIMATD</h1>
+<div id="fitting-and-forecasting" class="section level1">
+<h1><strong>Fitting and Forecasting</strong></h1>
+<div id="overview" class="section level3">
+<h3>Overview</h3>
+<p>This demonstration focuses on the simplest building block of any large forecasting experiment or study: how to make a forecast from one model at one time point for a single location. ForecastFramework makes it easy to generalize this process to multiple models, multiple time points and multiple locations. However, for starters, we will focus on the anatomy of a single forecast from a single model.</p>
+</div>
 <div id="about-sarimatd" class="section level3">
-<h3>About SARIMATD</h3>
-<p>This demonstration investigates the usage of models with ForecastFramework. <a href="https://github.com/reichlab/sarimaTD">SARIMATD</a> is a new R package created by Evan Ray of the Reich Lab. SARIMATD stands for SARIMA with Transformations and Seasonal Differencing. SARIMATD is a model composed of a set of wrapper functions that simplify estimating and predicting traditional SARIMA models. These wrapper functions first transform the incidence data to approximate normality, then perform seasonal differencing, and input the new incidence data to the <code>forecast::auto.arima</code> function from the Forecast package.</p>
+<h3>About sarimaTD</h3>
+<p>Specifically, we will use a variation on standard <a href="https://otexts.org/fpp2/seasonal-arima.html">Seasonal Auto-Regressive Integrated Moving Average models</a>. <a href="https://github.com/reichlab/sarimaTD">sarimaTD</a> is an R package created by <a href="http://www.mtholyoke.edu/~eray/">Evan Ray</a>. sarimaTD stands for SARIMA with Transformations and Seasonal Differencing. sarimaTD is a model composed of a set of wrapper functions that simplify estimating and predicting traditional SARIMA models. These wrapper functions first transform the incidence data to approximate normality, then perform seasonal differencing (if specified), and input the new incidence data to the <code>auto.arima</code> function from the <code>forecast</code> package. These simple transformations have shown improved forecasting performance of SARIMA models for infectious disease incidence by increasing the numerical stability of the model.</p>
 </div>
 <div id="fitting-the-forecastframework-sarimatd-model" class="section level3">
-<h3>Fitting the ForecastFramework SARIMATD Model</h3>
+<h3>Fitting the ForecastFramework sarimaTD Model</h3>
 <div id="import-packages" class="section level4">
 <h4>1. Import packages</h4>
 <p>First you must import all the required libraries. Note that ForecastFramework doesn’t requre <code>dplyr</code> or <code>ggplot2</code>, but they will be used to make a figure at the end of the demo.</p>
@@ -329,17 +400,17 @@ source_github &lt;-<span class="st"> </span><span class="cf">function</span>(u) 
 <span class="co"># Source R6 Files</span>
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R&#39;</span>)
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R&#39;</span>)</code></pre></div>
-<p>Now it is time to fit your SARIMATD Model! ForecastFramework makes this easy.</p>
+<p>Now it is time to fit your sarimaTD Model! ForecastFramework makes this easy.</p>
 </div>
 <div id="create-new-sarimatdmodel-class" class="section level4">
-<h4>2. Create new SARIMATDmodel Class</h4>
-<p>In this SARIMATD model, simulation is used with <code>::forecast auto.arima()</code>. So we must define the number of simulations to use, <code>nsim</code>. We also need to define the seasonal periodicity of our data, or the <code>period</code> parameter. For this forecast, we know the periodicity is 52, because the data is weekly. once we define these parameters, they can be passed into the <code>SARIMATDModel()</code> class generator to create a new <code>sarimaTDmodel</code> class.</p>
+<h4>2. Create new sarimaTDmodel Class</h4>
+<p>In this sarimaTD model, forecasts are created by simulating multiple time-series trajectories from models fit using the <code>forecast::auto.arima()</code> function. Therefore, we must define the number of simulations to generate, <code>nsim</code>. We also need to define the seasonal periodicity of our data, or the <code>period</code> parameter. For this forecast, we know the periodicity is 52, because the data is weekly. once we define these parameters, they can be passed into the <code>sarimaTDModel()</code> class generator to create a new <code>sarimaTDmodel</code> class.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nsim &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># Number of SARIMA simulations </span>
 sarimaTDmodel &lt;-<span class="st"> </span>SARIMATD1Model<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> <span class="dv">52</span>, <span class="dt">nsim =</span> nsim)</code></pre></div>
 </div>
 <div id="import-cdc-flu-data" class="section level4">
 <h4>3. Import CDC Flu Data</h4>
-<p>To import the fluview data, use the <code>ilinet()</code> command. The data is then filtered to remove unneeded weeks and years. Then, the data is stored as an <code>IncidenceMatrix()</code>. An incidence matrix represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. IncidenceMatrix is the preferred input for ForecastFramework Models.</p>
+<p>To import the fluview data, use the <code>ilinet()</code> command. The data is then filtered to remove unneeded weeks and years. Then, the data is stored as an <code>IncidenceMatrix</code>. An <code>IncidenceMatrix</code> represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. <code>IncidenceMatrix</code> is the preferred input for ForecastFramework Models.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data2 &lt;-<span class="st"> </span><span class="kw">ilinet</span>(<span class="dt">region =</span> <span class="st">&quot;National&quot;</span>)
 data2 &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>( week <span class="op">!=</span><span class="st"> </span><span class="dv">53</span>)
 data2 &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span>
@@ -368,7 +439,7 @@ testing_data &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><
 
 training_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(training_data)
 testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(testing_data)</code></pre></div>
-<p>Let’s look at a sample from the new IncidenceMatrix to view the IncidenceMatrix Format:</p>
+<p>Let’s look at a sample from the new <code>IncidenceMatrix</code> to view the <code>IncidenceMatrix</code> Format:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(training_inc<span class="op">$</span>mat[,<span class="dv">0</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
 <pre><code>## 2010.01923076923 2010.03846153846 2010.05769230769 2010.07692307692 
 ##          1.90712          1.86738          1.88072          1.96908 
@@ -384,8 +455,8 @@ testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sarimaTDmodel<span class="op">$</span><span class="kw">fit</span>(training_inc)</code></pre></div>
 </div>
 </div>
-<div id="forecasting-with-the-forecastframework-sarima-model" class="section level3">
-<h3>Forecasting with the ForecastFramework SARIMA Model</h3>
+<div id="forecasting-with-the-forecastframework-sarimatd-model" class="section level3">
+<h3>Forecasting with the ForecastFramework sarimaTD Model</h3>
 <div id="forecasting-sarima" class="section level4">
 <h4>4. Forecasting SARIMA</h4>
 <p>Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the <code>steps</code> parameter. Then, you forecast with the <code>sarimaTDmodel$forecast()</code> method. This model will forecast one year into the future (26 biweeks).</p>
@@ -454,18 +525,44 @@ preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">
 </div>
 <div id="plot-the-forecast-output" class="section level4">
 <h4>6. Plot the Forecast Output</h4>
-<p>Finally, you are able to plot your SARIMATD Forecast! Lets use <code>ggplot2</code> to create a cool plot.</p>
+<p>Finally, you are able to plot your sarimaTD Forecast! Lets use <code>ggplot2</code> to create a cool plot.</p>
 </div>
 </div>
 <div id="weighted-ili-sarimatd-forecast" class="section level3">
-<h3>Weighted ILI SARIMATD Forecast</h3>
-<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" width="960" /></p>
+<h3>Weighted ILI sarimaTD Forecast</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_X_3years &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2013</span>)
+<span class="kw">ggplot</span>(<span class="dt">data=</span>preds_df, <span class="kw">aes</span>(<span class="dt">x=</span>date_sick)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">ymin =</span> pred_95_lb, <span class="dt">ymax =</span> pred_95_ub),
+    <span class="dt">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>,
+    <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">ymin =</span> pred_80_lb, <span class="dt">ymax =</span> pred_80_ub),
+    <span class="dt">fill =</span> <span class="st">&quot;cornflowerblue&quot;</span>,
+    <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">ymin =</span> pred_50_lb, <span class="dt">ymax =</span> pred_50_ub),
+    <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(
+    <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">y =</span> pred_total_cases),
+    <span class="dt">color =</span> <span class="st">&quot;royalblue&quot;</span>,
+    <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> week_start, <span class="dt">y =</span> weighted_ili),
+            <span class="dt">size=</span><span class="fl">0.7</span>,
+            <span class="dt">data =</span> data_X_3years) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Weighted ILI&quot;</span>)</code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" width="960" /></p>
+<a href="http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1">
+<button type="button" class="btn btn-raised btn-secondary">
+Proceed to Evaluating Multiple Models
+</button>
+<p></a></p>
 </div>
 </div>
-<div id="evaluating-complex-models-sarimatd-sarima-gam-1" class="section level1">
-<h1><strong>Evaluating Complex Models</strong> SARIMATD, SARIMA, GAM</h1>
-<div id="evaluating-complex-models" class="section level3">
-<h3>Evaluating Complex Models</h3>
+<div id="evaluating-multiple-models" class="section level1">
+<h1><strong>Evaluating Multiple Models</strong></h1>
+<div id="evaluating-multiple-models-1" class="section level3">
+<h3>Evaluating Multiple Models</h3>
 <p>This tutorial will demonstrate how to easily compare multiple models on ForecastFramework. One of the best advantages of ForecastFramework is the ability to evaluate many models at once with the same functions.</p>
 <div id="preprocessing-data" class="section level4">
 <h4>Preprocessing Data</h4>
@@ -517,18 +614,19 @@ testing_data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><s
 ## 3 National  2016    21         1.18 2016-05-23
 ## 4 National  2016    22         1.14 2016-05-30
 ## 5 National  2016    23         1.04 2016-06-06</code></pre>
-<p>Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the <code>ObservationList$new()</code> ForecastFramework function to easily convert the dataframe to an incidence matrix. The <code>$formArray()</code> is the second step to complete the incidence matrix.</p>
-<p>Note: The time step in this example is 52 weeks; however, there are datasets with 26 biweeks or other time intervals used in the <code>t.step</code>, <code>dat$t</code>, and <code>max.year.time</code> values.</p>
+<p>Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the <code>ObservationList$new()</code> ForecastFramework function to easily convert the dataframe to an <code>IncidenceMatrix</code>. The <code>$formArray()</code> is the second step to complete the <code>IncidenceMatrix</code>.</p>
+<p>Note: The time step in this example is 52 weeks; however, there are datasets with other timesteps (e.g. 26 biweeks) that would impact the calculations of <code>t.step</code>, <code>dat$t</code>, and <code>max.year.time</code> values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a Preprocess Function</span>
 <span class="co"># Convert Training and Testing data to incidence matrices</span>
 <span class="co"># time.in.year is a requirement for the GAM model</span>
+time_step &lt;-<span class="st"> </span><span class="dv">52</span>
 preprocess_inc &lt;-<span class="st"> </span><span class="cf">function</span>(dat){
   dat<span class="op">$</span>time.in.year =<span class="st"> </span>dat<span class="op">$</span>week
-  dat<span class="op">$</span>t =<span class="st"> </span>dat<span class="op">$</span>year <span class="op">+</span><span class="st"> </span>dat<span class="op">$</span>week<span class="op">/</span><span class="dv">52</span>
+  dat<span class="op">$</span>t =<span class="st"> </span>dat<span class="op">$</span>year <span class="op">+</span><span class="st"> </span>dat<span class="op">$</span>week<span class="op">/</span>time_step
   inc =<span class="st"> </span>ObservationList<span class="op">$</span><span class="kw">new</span>(dat)
   inc<span class="op">$</span><span class="kw">formArray</span>(<span class="st">&#39;region&#39;</span>,<span class="st">&#39;t&#39;</span>,<span class="dt">val=</span><span class="st">&#39;weighted_ili&#39;</span>,
                 <span class="dt">dimData =</span> <span class="kw">list</span>(<span class="ot">NULL</span>,<span class="kw">list</span>(<span class="st">&#39;week&#39;</span>,<span class="st">&#39;year&#39;</span>,<span class="st">&#39;time.in.year&#39;</span>,<span class="st">&#39;t&#39;</span>)),
-                <span class="dt">metaData =</span> <span class="kw">list</span>(<span class="dt">t.step =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">52</span>,<span class="dt">max.year.time =</span> <span class="dv">52</span>))
+                <span class="dt">metaData =</span> <span class="kw">list</span>(<span class="dt">t.step =</span> <span class="dv">1</span><span class="op">/</span>time_step, <span class="dt">max.year.time =</span> time_step))
   <span class="kw">return</span>(inc)
 }
 
@@ -538,14 +636,14 @@ testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>
 </div>
 <div id="defining-models" class="section level4">
 <h4>Defining Models</h4>
-<p>This demo will be evaluating the GAM, SARIMA, and SARIMATD model given different evaluation metrics.</p>
+<p>This demo will be evaluating the Generalized Additive Model (GAM), SARIMA, and sarimaTD models given different evaluation metrics. The GAM model is based on the model used in <a href="https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004761">published real-time infectious disease forecasting research</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Defining the Models</span>
 nsim &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># Number of simulations </span>
 region_num &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># Only modeling the &quot;National&quot; region</span>
 
-sarimaTD_model &lt;-<span class="st"> </span>SARIMATD1Model<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> <span class="dv">52</span>, <span class="dt">nsim =</span> nsim)
-sarima_model &lt;-<span class="st"> </span>SARIMAModel<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> <span class="dv">52</span>, <span class="dt">nsim =</span> nsim)
-gam_model &lt;-<span class="st"> </span>GamModel<span class="op">$</span><span class="kw">new</span>(<span class="dt">numProvinces =</span> region_num,<span class="dt">nSims =</span> nsim)</code></pre></div>
+sarimaTD_model &lt;-<span class="st"> </span>SARIMATD1Model<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> time_step, <span class="dt">nsim =</span> nsim)
+sarima_model &lt;-<span class="st"> </span>SARIMAModel<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> time_step, <span class="dt">nsim =</span> nsim)
+gam_model &lt;-<span class="st"> </span>GamModel<span class="op">$</span><span class="kw">new</span>(<span class="dt">numProvinces =</span> region_num, <span class="dt">nSims =</span> nsim)</code></pre></div>
 </div>
 <div id="fitting-models" class="section level4">
 <h4>Fitting Models</h4>
@@ -567,7 +665,7 @@ forecast_gam &lt;-<span class="st"> </span>gam_model<span class="op">$</span><sp
 <div id="evaluating-the-models" class="section level4">
 <h4>Evaluating the Models</h4>
 <p>Now for the fun part! How did the models perform? This question is easy to answer with ForecastFramework Models.</p>
-<p><strong>Important Note:</strong> This is not a formal model evaluation or comparison. The goal of this exercise is to demonstrate different ForecastFramework techniques. Although the SARIMATD model appears to perform better than the other models in this example, a more in-depth analysis must be made before any conclusions can be made about model performance.</p>
+<p><strong>Important Note:</strong> This is not a formal model evaluation or comparison. The goal of this exercise is to demonstrate different ForecastFramework techniques. Although the sarimaTD model appears to perform better than the other models in this example, a more in-depth analysis must be made before any conclusions can be made about model performance.</p>
 <p><strong>Side-by-Side Forecasting Timeseries</strong> This function creates a time series visualization with the predicted median and quantiles displayed by a specific color. Notice <code>forecast$quantile(0.025)$mat</code> gives a matrix with a 2.5% quantile. Additionally, <code>forecast$mean()$mat</code> gives the mean forecast for that specific time period. Additionally, <code>na.rm=TRUE</code>, removes any NA values in the simulation to calculate the mean.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Function to create time series with Visualization</span>
 visualize_model &lt;-<span class="st"> </span><span class="cf">function</span>(forecast, rib_color, main_color){
@@ -613,13 +711,13 @@ visualize_model &lt;-<span class="st"> </span><span class="cf">function</span>(f
 }
 
 <span class="co"># Create each plot</span>
-plot1 &lt;-<span class="st"> </span><span class="kw">visualize_model</span>(forecast_sarimaTD, <span class="st">&quot;palegreen3&quot;</span>, <span class="st">&quot;forestgreen&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;SARIMATD&quot;</span>)
+plot1 &lt;-<span class="st"> </span><span class="kw">visualize_model</span>(forecast_sarimaTD, <span class="st">&quot;palegreen3&quot;</span>, <span class="st">&quot;forestgreen&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;sarimaTD&quot;</span>)
 plot2 &lt;-<span class="st"> </span><span class="kw">visualize_model</span>(forecast_sarima, <span class="st">&quot;coral1&quot;</span>, <span class="st">&quot;red&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;SARIMA&quot;</span>)
 plot3 &lt;-<span class="st"> </span><span class="kw">visualize_model</span>(forecast_gam, <span class="st">&quot;cornflowerblue&quot;</span> , <span class="st">&quot;blue&quot;</span>)<span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;GAM&quot;</span>)
 
 <span class="co"># Display side-by-side plots</span>
 <span class="kw">grid.arrange</span>(plot1, plot2, plot3, <span class="dt">ncol=</span><span class="dv">3</span>)</code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-39-1.png" width="1056" /> Note the sparcity in the SARIMA forecast. This is one benefit of SARIMATD - the ability to provide long-term forecasts with the aid of transformations and seasonal differencing.</p>
+<p><img src="index_files/figure-html/unnamed-chunk-42-1.png" width="1056" /> Note the sparsity in the SARIMA forecast, due to some forecasted trajectories yielding undefined forecasted means (e.g. if one of the trajectories contains a non-numeric or NA value). This is one benefit of sarimaTD - the ability to provide stable long-term forecasts with the aid of transformations and seasonal differencing. It avoids some of the “brittlenes” that we have observed when just using SARIMA fitting out of the box.</p>
 <p><strong>Common Evaluation Metrics</strong> Calculating evaluation metrics is easy with ForecastFramework objects.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mean Absolute Error</span>
 MAE &lt;-<span class="st"> </span><span class="cf">function</span>(forecast_mean, test_inc){
@@ -741,18 +839,23 @@ RMSE
 </tr>
 </tbody>
 </table>
+<a href="http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1">
+<button type="button" class="btn btn-raised btn-secondary">
+Proceed to Creating your own Model
+</button>
+<p></a></p>
 </div>
 </div>
 </div>
-<div id="creating-your-own-model-sarimatd-1" class="section level1">
-<h1><strong>Creating your own Model</strong> SARIMATD</h1>
-<div id="creating-your-own-model" class="section level3">
+<div id="creating-your-own-model" class="section level1">
+<h1><strong>Creating your own Model</strong></h1>
+<div id="creating-your-own-model-1" class="section level3">
 <h3>Creating your Own Model</h3>
 <p>This Tutorial will demonstrate how to create a basic model with ForecastFramework. Models are created with R Object-Oriented programming, or the <a href="https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html">R6 package</a>. It is essential to have a basic understanding of the structure of R6 Objects, before creating a ForecastFramework package. In this tutorial, the SARIMATD model will be created step-by-step.</p>
 </div>
 <div id="sarimatd" class="section level3">
 <h3>SARIMATD</h3>
-<p>SARIMATD is a model created by Evan Ray of the Reich Lab. SARIMATD uses set of wrapper functions around the forecast package to simplify estimation of and prediction from SARIMA models.</p>
+<p>SARIMATD is a model created by <a href="http://www.mtholyoke.edu/~eray/">Evan Ray</a>. SARIMATD uses set of wrapper functions around the forecast package to simplify estimation of and prediction from SARIMA models.</p>
 <p>Basic Steps of the Model:</p>
 <ol style="list-style-type: decimal">
 <li>Incidence data are transformed to approximate normality</li>
@@ -796,7 +899,7 @@ RMSE
 </div>
 <div id="define-your-fit-and-forecast-functions" class="section level4">
 <h4>2. Define your <code>fit()</code> and <code>forecast()</code> functions</h4>
-<p>The easiest way to incorporate a model into ForecastFramework is to pre-define your fit and forecast functions in a separate package, or use a separate package like the <code>forecast</code> package. The <a href="https://github.com/reichlab/sarimaTD">SARMATD package</a> is hosted on Github and available for download with CRAN.</p>
+<p>The easiest way to incorporate a model into ForecastFramework is to pre-define your fit and forecast functions in a separate package, or use a separate package like the <code>forecast</code> package. The <a href="https://github.com/reichlab/sarimaTD">SARMATD package</a> is hosted on GitHub and available for download with CRAN.</p>
 <p>The SARIMATD fit function is as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; @param y a univariate time series or numeric vector.</span>
 <span class="co">#&#39; @param ts_frequency frequency of time series.  Must be provided if y is not</span>
@@ -843,7 +946,7 @@ RMSE
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  private =<span class="st"> </span><span class="kw">list</span>(
     <span class="dt">.data =</span> <span class="ot">NULL</span>,        ## every model should have this
     <span class="dt">.models =</span> <span class="kw">list</span>(),    ## specific to models that are fit separately for each location
-    <span class="dt">.nsim =</span> <span class="dv">1000</span>,         ## models that are simulating forecasts need this
+    <span class="dt">.nsim =</span> <span class="dv">1000</span>,        ## models that are simulating forecasts need this
     <span class="dt">.lambda =</span> <span class="kw">list</span>(),    ## specific to ARIMA models
     <span class="dt">.period =</span> <span class="kw">integer</span>(<span class="dv">0</span>) ## specific to SARIMA models
   ),</code></pre></div>
