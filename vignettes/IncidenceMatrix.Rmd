@@ -82,4 +82,4 @@ data_object$colData
 data_object$mat
 ```
 
-<a href="http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to Fitting and Forecasting</button></a>
+<a href="#fitting-and-forecasting"><button type="button" class="btn btn-raised btn-secondary">Proceed to Fitting and Forecasting</button></a>

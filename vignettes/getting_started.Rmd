@@ -67,15 +67,15 @@ Below is a very basic example of the ForecastFramework pipeline: preprocessing, 
 Each of the subsequent vignettes looks into a part of this process. Note that the preprocesing stage will be included in the Defining Inputs Vignette.
 
 ### Vignette Overview:
-* #### [The Data](http://reichlab.io/forecast-framework-demos/#the-data-1)
+* #### [The Data](#the-data-1)
 This section will examines the raw data used in the ForecastFramework models ahead.
-* #### [Defining Inputs: Incidence Matrix](http://reichlab.io/forecast-framework-demos/#defining-inputs-incidence-matrix-1)
+* #### [Defining Inputs: Incidence Matrix](#defining-inputs-incidence-matrix-1)
 (*Beginner Section*) This section will define what an Incidence Matrix is, show how to format your data to be used as an Incidence Matrix, and exemplify functions of Incidence Matrices.
-* #### [Fitting and Forecasting: SARIMATD](http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1)
+* #### [Fitting and Forecasting: SARIMATD](#fitting-and-forecasting)
 (*Beginner Section*)This section will focus on fitting data to a SARIMA model with ForecastFramework.
-* #### [Evaluating Complex Models: SARIMATD, SARIMA, GAM](http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1)
+* #### [Evaluating Complex Models: SARIMATD, SARIMA, GAM](#evaluating-multiple-models)
 (*Intermediate Section*) This section will demonstrate evaluation metrics and techniques by comparing two complex models in ForecastFramework.
-* #### [Creating your own Model: SARIMATD](http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1)
+* #### [Creating your own Model: SARIMATD](#creating-your-own-model)
 (*Advanced Section*) This section will demonstrate how to create your own model with ForecastFramework. NOTE: This section requires object-oriented programming knowledge.
 
-<a href="http://reichlab.io/forecast-framework-demos/#the-data-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to The Data</button></a>
+<a href="#the-data-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to The Data</button></a>

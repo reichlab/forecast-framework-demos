@@ -243,4 +243,4 @@ kable(results) %>%
 ```
 
 
-<a href="http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to Creating your own Model</button></a>
+<a href="#creating-your-own-model"><button type="button" class="btn btn-raised btn-secondary">Proceed to Creating your own Model</button></a>

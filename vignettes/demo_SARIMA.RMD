@@ -176,4 +176,4 @@ ggplot(data=preds_df, aes(x=date_sick)) +
   xlab("") + ylab("Weighted ILI")
 ```
 
-<a href="http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1"><button type="button" class="btn btn-raised btn-secondary">Proceed to Evaluating Multiple Models</button></a>
+<a href="#evaluating-multiple-models"><button type="button" class="btn btn-raised btn-secondary">Proceed to Evaluating Multiple Models</button></a>

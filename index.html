@@ -136,7 +136,7 @@ $(document).ready(function () {
 <h3>Creation</h3>
 <p>ForecastFramework was created by Joshua Kaminsky of the <a href="http://www.iddynamics.jhsph.edu/">Infectious Disease Dynamics Group</a> at Johns Hopkins University. This demo was created by <a href="www.github.com/katiehouse3">Katie House</a>.</p>
 <p><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>
-<a href="http://reichlab.io/forecast-framework-demos/#getting-started">
+<a href="#getting-started">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to Getting Started
 </button>
@@ -197,18 +197,18 @@ source_github &lt;-<span class="st"> </span><span class="cf">function</span>(u) 
 <div id="vignette-overview" class="section level3">
 <h3>Vignette Overview:</h3>
 <ul>
-<li><h4 id="the-data"><a href="http://reichlab.io/forecast-framework-demos/#the-data-1">The Data</a></h4>
+<li><h4 id="the-data"><a href="#the-data-1">The Data</a></h4>
 This section will examines the raw data used in the ForecastFramework models ahead.</li>
-<li><h4 id="defining-inputs-incidence-matrix"><a href="http://reichlab.io/forecast-framework-demos/#defining-inputs-incidence-matrix-1">Defining Inputs: Incidence Matrix</a></h4>
+<li><h4 id="defining-inputs-incidence-matrix"><a href="#defining-inputs-incidence-matrix-1">Defining Inputs: Incidence Matrix</a></h4>
 (<em>Beginner Section</em>) This section will define what an Incidence Matrix is, show how to format your data to be used as an Incidence Matrix, and exemplify functions of Incidence Matrices.</li>
-<li><h4 id="fitting-and-forecasting-sarimatd"><a href="http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1">Fitting and Forecasting: SARIMATD</a></h4>
+<li><h4 id="fitting-and-forecasting-sarimatd"><a href="#fitting-and-forecasting">Fitting and Forecasting: SARIMATD</a></h4>
 (<em>Beginner Section</em>)This section will focus on fitting data to a SARIMA model with ForecastFramework.</li>
-<li><h4 id="evaluating-complex-models-sarimatd-sarima-gam"><a href="http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1">Evaluating Complex Models: SARIMATD, SARIMA, GAM</a></h4>
+<li><h4 id="evaluating-complex-models-sarimatd-sarima-gam"><a href="#evaluating-multiple-models">Evaluating Complex Models: SARIMATD, SARIMA, GAM</a></h4>
 (<em>Intermediate Section</em>) This section will demonstrate evaluation metrics and techniques by comparing two complex models in ForecastFramework.</li>
-<li><h4 id="creating-your-own-model-sarimatd"><a href="http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1">Creating your own Model: SARIMATD</a></h4>
+<li><h4 id="creating-your-own-model-sarimatd"><a href="#creating-your-own-model">Creating your own Model: SARIMATD</a></h4>
 (<em>Advanced Section</em>) This section will demonstrate how to create your own model with ForecastFramework. NOTE: This section requires object-oriented programming knowledge.</li>
 </ul>
-<a href="http://reichlab.io/forecast-framework-demos/#the-data-1">
+<a href="#the-data-1">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to The Data
 </button>
@@ -259,7 +259,7 @@ plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class=
 <div id="scope-of-this-demo" class="section level4">
 <h4>Scope of this demo</h4>
 <p>This demo will forecast an entire year’s worth of wILI incidence starting from the beginning of the flu season in 2016.</p>
-<a href="http://reichlab.io/forecast-framework-demos/#defining-inputs-incidence-matrix-1">
+<a href="#defining-inputs-incidence-matrix-1">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to Defining the Inputs
 </button>
@@ -359,7 +359,7 @@ data_object<span class="op">$</span>colData</code></pre></div>
 ## [1,]    1    4    7   NA   NA
 ## [2,]    2    5    8   NA   NA
 ## [3,]    3    6    9   NA   NA</code></pre>
-<a href="http://reichlab.io/forecast-framework-demos/#fitting-and-forecasting-sarimatd-1">
+<a href="#fitting-and-forecasting">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to Fitting and Forecasting
 </button>
@@ -552,7 +552,7 @@ preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">
             <span class="dt">data =</span> data_X_3years) <span class="op">+</span>
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Weighted ILI&quot;</span>)</code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-34-1.png" width="960" /></p>
-<a href="http://reichlab.io/forecast-framework-demos/#evaluating-complex-models-sarimatd-sarima-gam-1">
+<a href="#evaluating-multiple-models">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to Evaluating Multiple Models
 </button>
@@ -839,7 +839,7 @@ RMSE
 </tr>
 </tbody>
 </table>
-<a href="http://reichlab.io/forecast-framework-demos/#creating-your-own-model-sarimatd-1">
+<a href="#creating-your-own-model">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to Creating your own Model
 </button>
