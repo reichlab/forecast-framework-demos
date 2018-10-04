@@ -6,12 +6,15 @@ output:
     self_contained: false
     highlight: tango
     css: styles.css
+    include:
+      after_body: footer.html
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 setwd(getwd())
 ```
   
+
 # **About** ForecastFramework
 
 ```{r child = 'vignettes/about.Rmd'}
@@ -44,4 +47,3 @@ setwd(getwd())
 # **Creating your own Model** 
 ```{r child = 'vignettes/create.Rmd'}
 ```
-
