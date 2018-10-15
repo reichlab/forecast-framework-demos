@@ -2,7 +2,6 @@ library(mgcv)
 library(stats)
 library(dplyr)
 library(reshape2)
-source('../models/AggregateForecastModel.R')
 ##----------------------------------------------------------------------------##
 ##----------------------------------------------------------------------------##
 ##             Spatial Prediction Model Object Oriented Framework             ##
