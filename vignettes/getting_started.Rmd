@@ -33,20 +33,23 @@ devtools::install_github("hrbrmstr/cdcfluview")
 ```
 Test your packages are correctly installed with these commands:
 ```{r eval=FALSE}
+# Forecast Framework Dependencies
 library(ForecastFramework)
 library(R6)
 library(forecast)
+
+# Data Dependencies
+library(cdcfluview)
 library(dplyr)
 library(ggplot2)
-library(cdcfluview)
 library(gridExtra)
 library(data.table)
 library(knitr)
 library(kableExtra)
-library(RCurl)
 
 # Function of Source Github Models
 source_github <- function(u) {
+  library(RCurl)
   # read script lines from website and evaluate
   script <- getURL(u, ssl.verifypeer = FALSE)
   eval(parse(text = script),envir=.GlobalEnv)

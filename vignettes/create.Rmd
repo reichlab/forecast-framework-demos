@@ -25,29 +25,24 @@ ForecastFramework models all have the same basic structure:
 model <- R6Class(
   inherit = ContestModel, # or AggregateModel
   private = list(
-    #' @method private section is for aspects we do not want the user to access directly
+    #' private section is for aspects we do not want the user to access directly
   ),
   public = list(
-    #' @method fit_ Get the model ready to predict
+    #' @method fit_ Get the model ready to forecast
     #' @param data The data to fit the model to.
     fit = function(data){
       ...
     },
     #' @method forecast Predict some number of time steps into the future.
     #' @param newdata The data to forecast from
-    #' @param steps The number of timesteps into the future to predict.
+    #' @param steps The number of timesteps into the future to forecast
     forecast = function(newdata,steps){
       ...
     },
     #' @method initialize Create a new instance of this class. 
     initialize = function(){
       ...
-    },
-    #' @method predict predict using the model.
-    #' @param newdata Predict using the model.
-    predict = function(newdata){
-      ...
-    },
+    }
   )
 )
 ```
@@ -113,6 +108,7 @@ Will become:
     .period = integer(0) ## specific to SARIMA models
   ),
 ```
+This section is comprised of inputs in your model that are not able to be accessed by the user directly, but will be updatable in the later initialize section. The arguments in the `fit()` and `forecast()` functions are fixed without incorporating private fields. For example, the `nsim` (number of simulations) may change, which makes it necessary to add these updatable variables in the private section. However, notice that all private variables include a `.` in the private section. This is the common way of distinguising a private variable in `R6`. 
 
 #### 4. Update the fit Method
 Upload IncidenceMatrix to Fit function:
@@ -209,41 +205,8 @@ initialize = function(period = 26, nsim=1000) {
     },
 ```
 
-#### 6. Update the active section
-This section determines what users can change in the model:
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
-active = list(
-    ## This list determines how you can access pieces of your model object
-    data = function(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      if(!missing(value))
-        stop("Writing directly to the data is not allowed.")
-      return(private$.data)
-    },
-    models = function(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      if(!missing(value))
-        stop("Writing directly to the models is not allowed.")
-      return(private$.models)
-    },
-    nsim = function(value) {
-      ## use this form when you want to be able to change this parameter
-      private$defaultActive(type="private", ".nsim", val=value)
-    },
-    lambda = function(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      if(!missing(value))
-        stop("Writing directly to lambda is not allowed.")
-      return(private$.lambda)
-    },
-    period = function(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      if(!missing(value))
-        stop("Writing directly to the model period is not allowed.")
-      return(private$.period)
-    }
-  )
-```
+#### 6. Update the active binding
+We will ignore this section for now. It is a more advanced level and stay tuned for another vignette that expains active binding.
 
 #### 7. Putting everything Together
 All of the previous sections and methods are put together as the R6 Object:
@@ -320,34 +283,6 @@ SARIMATD1Model <- R6Class(
       ## need to store these arguments within the model object
       private$.nsim <- nsim
       private$.period <- period
-    },
-    predict = function(newdata) {
-      stop("predict method has not been written.")
-    }
-  ),
-  active = list(
-    ## This list determines how you can access pieces of your model object
-    data = function(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      if(!missing(value))
-        stop("Writing directly to the data is not allowed.")
-      return(private$.data)
-    },
-    models = function(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      if(!missing(value))
-        stop("Writing directly to the models is not allowed.")
-      return(private$.models)
-    },
-    nsim = function(value) {
-      ## use this form when you want to be able to change this parameter
-      private$defaultActive(type="private", ".nsim", val=value)
-    },
-    period = function(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      if(!missing(value))
-        stop("Writing directly to the model period is not allowed.")
-      return(private$.period)
     }
   )
 )

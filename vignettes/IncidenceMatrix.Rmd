@@ -49,8 +49,8 @@ In object oriented programming, a 'method' is a function for a class. In this ca
 * `$addRows(n)` add `n` rows to matrix
 * `$diff(n)` difference between each column and lag `n` columns to the left
 * `$lag(n)` lag each column by `n`
-* `$head(x,y)` show `x` columns/rows from the top (`y`=1 for columns, 2 for rows)
-* `$tail(x,y)` show `x` columns/rows from the bottom (`y`=1 for columns, 2 for rows)
+* `$head(k,direction)` show `x` columns/rows from the top (`y`=1 for columns, 2 for rows)
+* `$tail(k,direction)` show `x` columns/rows from the bottom (`y`=1 for columns, 2 for rows)
 * `$scale(functin(x){})` scale the matrix by some function
 * `$subset(rows=x,cols=y)` take a subset of the matrix by `x` rows and `y` columns
 

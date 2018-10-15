@@ -31,6 +31,7 @@ source_github <- function(u) {
 }  
 # Source R6 Files
 source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R')
+source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/AggregateForecastModel.R')
 source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMAModel.R')
 source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/GamModel.R')
 source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R')

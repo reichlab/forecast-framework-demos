@@ -12,7 +12,7 @@ Specifically, we will use a variation on standard [Seasonal Auto-Regressive Inte
 
 ### Fitting the ForecastFramework sarimaTD Model
 #### 1. Import packages
-First you must import all the required libraries. Note that ForecastFramework doesn't requre `dplyr` or `ggplot2`, but they will be used to make a figure at the end of the demo.
+First you must import all the required libraries. Note that ForecastFramework doesn't requre `dplyr`, `ggplot2`, `cdcfluview` or `RCurl` but they will be used for sourcing the models on Github, getting the flu data, and producing the data processing and visualization.
 
 ```{r, warning=FALSE, message=FALSE}
 library(ForecastFramework)
@@ -100,9 +100,7 @@ sarimaTDmodel$fit(training_inc)
 Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the `steps` parameter. Then, you forecast with the `sarimaTDmodel$forecast()` method. This model will forecast one year into the future (26 biweeks).
 
 ```{r, warning=FALSE, message=FALSE}
-# define how many provinces to model
-# this demo only has data for one province: Province 10
-steps <- 52 # forecast ahead 30 epiweeks
+steps <- 52 # forecast ahead 52 weeks
 ```
 
 Then, use the built-in `$forecast()` function to create your forecasts. This creates a new R6 object with your forecasts and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.
@@ -112,9 +110,9 @@ forecast_X <- sarimaTDmodel$forecast(steps = steps)
 
 ### Plotting the Output
 #### 5. Formatting the Forecast Output
-To view the new forecasting data in matrix form, execute the following command:
+To view the the median forecast of the simulations, execute the following command:
 ```{r, warning=FALSE}
-forecast_X$data$mat
+forecast_X$median()$mat
 ```
 
 Lets convert the forecast matrix to a dataframe in R for easy manipulation: 

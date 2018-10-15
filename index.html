@@ -135,7 +135,6 @@ $(document).ready(function () {
 <div id="creation" class="section level3">
 <h3>Creation</h3>
 <p>ForecastFramework was created by Joshua Kaminsky of the <a href="http://www.iddynamics.jhsph.edu/">Infectious Disease Dynamics Group</a> at Johns Hopkins University. This demo was created by <a href="www.github.com/katiehouse3">Katie House</a>.</p>
-<p><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>
 <a href="#getting-started">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to Getting Started
@@ -165,20 +164,23 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;reichlab/sarimaTD&#39;</span>) 
 devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;hrbrmstr/cdcfluview&quot;</span>)</code></pre></div>
 <p>Test your packages are correctly installed with these commands:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ForecastFramework)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Forecast Framework Dependencies</span>
+<span class="kw">library</span>(ForecastFramework)
 <span class="kw">library</span>(R6)
 <span class="kw">library</span>(forecast)
+
+<span class="co"># Data Dependencies</span>
+<span class="kw">library</span>(cdcfluview)
 <span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(ggplot2)
-<span class="kw">library</span>(cdcfluview)
 <span class="kw">library</span>(gridExtra)
 <span class="kw">library</span>(data.table)
 <span class="kw">library</span>(knitr)
 <span class="kw">library</span>(kableExtra)
-<span class="kw">library</span>(RCurl)
 
 <span class="co"># Function of Source Github Models</span>
 source_github &lt;-<span class="st"> </span><span class="cf">function</span>(u) {
+  <span class="kw">library</span>(RCurl)
   <span class="co"># read script lines from website and evaluate</span>
   script &lt;-<span class="st"> </span><span class="kw">getURL</span>(u, <span class="dt">ssl.verifypeer =</span> <span class="ot">FALSE</span>)
   <span class="kw">eval</span>(<span class="kw">parse</span>(<span class="dt">text =</span> script),<span class="dt">envir=</span>.GlobalEnv)
@@ -322,8 +324,8 @@ Proceed to Defining the Inputs
 <li><code>$addRows(n)</code> add <code>n</code> rows to matrix</li>
 <li><code>$diff(n)</code> difference between each column and lag <code>n</code> columns to the left</li>
 <li><code>$lag(n)</code> lag each column by <code>n</code></li>
-<li><code>$head(x,y)</code> show <code>x</code> columns/rows from the top (<code>y</code>=1 for columns, 2 for rows)</li>
-<li><code>$tail(x,y)</code> show <code>x</code> columns/rows from the bottom (<code>y</code>=1 for columns, 2 for rows)</li>
+<li><code>$head(k,direction)</code> show <code>x</code> columns/rows from the top (<code>y</code>=1 for columns, 2 for rows)</li>
+<li><code>$tail(k,direction)</code> show <code>x</code> columns/rows from the bottom (<code>y</code>=1 for columns, 2 for rows)</li>
 <li><code>$scale(functin(x){})</code> scale the matrix by some function</li>
 <li><code>$subset(rows=x,cols=y)</code> take a subset of the matrix by <code>x</code> rows and <code>y</code> columns</li>
 </ul>
@@ -380,7 +382,7 @@ Proceed to Fitting and Forecasting
 <h3>Fitting the ForecastFramework sarimaTD Model</h3>
 <div id="import-packages" class="section level4">
 <h4>1. Import packages</h4>
-<p>First you must import all the required libraries. Note that ForecastFramework doesn’t requre <code>dplyr</code> or <code>ggplot2</code>, but they will be used to make a figure at the end of the demo.</p>
+<p>First you must import all the required libraries. Note that ForecastFramework doesn’t requre <code>dplyr</code>, <code>ggplot2</code>, <code>cdcfluview</code> or <code>RCurl</code> but they will be used for sourcing the models on Github, getting the flu data, and producing the data processing and visualization.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ForecastFramework)
 <span class="kw">library</span>(R6)
 <span class="kw">library</span>(forecast)
@@ -460,9 +462,7 @@ testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>
 <div id="forecasting-sarima" class="section level4">
 <h4>4. Forecasting SARIMA</h4>
 <p>Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the <code>steps</code> parameter. Then, you forecast with the <code>sarimaTDmodel$forecast()</code> method. This model will forecast one year into the future (26 biweeks).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define how many provinces to model</span>
-<span class="co"># this demo only has data for one province: Province 10</span>
-steps &lt;-<span class="st"> </span><span class="dv">52</span> <span class="co"># forecast ahead 30 epiweeks</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">steps &lt;-<span class="st"> </span><span class="dv">52</span> <span class="co"># forecast ahead 52 weeks</span></code></pre></div>
 <p>Then, use the built-in <code>$forecast()</code> function to create your forecasts. This creates a new R6 object with your forecasts and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X &lt;-<span class="st"> </span>sarimaTDmodel<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">steps =</span> steps)</code></pre></div>
 </div>
@@ -471,24 +471,24 @@ steps &lt;-<span class="st"> </span><span class="dv">52</span> <span class="co">
 <h3>Plotting the Output</h3>
 <div id="formatting-the-forecast-output" class="section level4">
 <h4>5. Formatting the Forecast Output</h4>
-<p>To view the new forecasting data in matrix form, execute the following command:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X<span class="op">$</span>data<span class="op">$</span>mat</code></pre></div>
+<p>To view the the median forecast of the simulations, execute the following command:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X<span class="op">$</span><span class="kw">median</span>()<span class="op">$</span>mat</code></pre></div>
 <pre><code>##                 1        2        3        4        5        6        7
-## National 1.494988 1.434023 1.305924 1.377093 1.277542 1.118989 1.107131
-##                 8        9        10       11       12        13        14
-## National 1.154718 1.075546 0.9737291 1.012862 0.968587 0.9295113 0.7956496
+## National 1.584742 1.526748 1.443575 1.418816 1.301111 1.161724 1.174942
+##                 8       9        10        11        12        13       14
+## National 1.140849 1.01655 0.9882865 0.9805727 0.8680418 0.8757863 0.837442
 ##                 15        16        17       18       19       20       21
-## National 0.8622301 0.8591591 0.9388838 1.078237 1.289133 1.398952 1.492972
-##               22       23       24       25      26       27       28
-## National 1.60926 1.751339 1.542025 1.653691 1.66884 1.773896 1.632859
+## National 0.8520797 0.8660965 0.9375262 1.090753 1.200582 1.254382 1.258886
+##                22       23       24       25      26       27       28
+## National 1.315844 1.359057 1.490701 1.491834 1.50524 1.635504 1.635482
 ##                29       30       31       32       33       34       35
-## National 1.857147 2.038057 2.382388 2.746086 3.745335 4.282143 2.835912
-##                36       37       38       39       40       41       42
-## National 2.686989 2.657029 2.691704 2.983318 3.318447 3.182371 2.847058
+## National 2.030026 2.032087 2.242976 2.433854 3.322446 3.589615 2.853262
+##                36       37      38       39       40       41      42
+## National 2.700749 3.055779 3.27241 3.033982 3.190194 3.305084 2.81014
 ##                43       44       45       46       47       48       49
-## National 3.019881 3.161179 2.587937 2.261168 2.166532 2.030118 1.869631
+## National 2.828586 2.717409 2.501638 2.384883 2.145852 1.971489 1.652278
 ##                50       51       52
-## National 1.842289 1.811737 1.579724</code></pre>
+## National 1.567704 1.488945 1.385259</code></pre>
 <p>Lets convert the forecast matrix to a dataframe in R for easy manipulation:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># converting predictions to a dataframe to use dplyr</span>
 preds_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">as.table</span>(<span class="kw">t</span>(forecast_X<span class="op">$</span>data<span class="op">$</span>mat)))</code></pre></div>
@@ -587,6 +587,7 @@ source_github &lt;-<span class="st"> </span><span class="cf">function</span>(u) 
 }  
 <span class="co"># Source R6 Files</span>
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/ContestModel.R&#39;</span>)
+<span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/AggregateForecastModel.R&#39;</span>)
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMAModel.R&#39;</span>)
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/GamModel.R&#39;</span>)
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R&#39;</span>)</code></pre></div>
@@ -786,13 +787,13 @@ GAM
 MAE
 </td>
 <td style="text-align:right;">
-0.4010836
+0.4021462
 </td>
 <td style="text-align:right;">
-1.612160
+1.614517
 </td>
 <td style="text-align:right;">
-1.040956
+1.041880
 </td>
 </tr>
 <tr>
@@ -800,13 +801,13 @@ MAE
 MSE
 </td>
 <td style="text-align:right;">
-0.5225570
+0.5269682
 </td>
 <td style="text-align:right;">
-4.752885
+4.769612
 </td>
 <td style="text-align:right;">
-2.247290
+2.245318
 </td>
 </tr>
 <tr>
@@ -814,13 +815,13 @@ MSE
 MAPE
 </td>
 <td style="text-align:right;">
-16.9582409
+16.9411844
 </td>
 <td style="text-align:right;">
-70.654734
+70.659918
 </td>
 <td style="text-align:right;">
-50.057026
+50.044354
 </td>
 </tr>
 <tr>
@@ -828,13 +829,13 @@ MAPE
 RMSE
 </td>
 <td style="text-align:right;">
-0.7228811
+0.7259258
 </td>
 <td style="text-align:right;">
-2.180111
+2.183944
 </td>
 <td style="text-align:right;">
-1.499096
+1.498438
 </td>
 </tr>
 </tbody>
@@ -871,29 +872,24 @@ Proceed to Creating your own Model
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
   <span class="dt">inherit =</span> ContestModel, <span class="co"># or AggregateModel</span>
   <span class="dt">private =</span> <span class="kw">list</span>(
-    <span class="co">#&#39; @method private section is for aspects we do not want the user to access directly</span>
+    <span class="co">#&#39; private section is for aspects we do not want the user to access directly</span>
   ),
   <span class="dt">public =</span> <span class="kw">list</span>(
-    <span class="co">#&#39; @method fit_ Get the model ready to predict</span>
+    <span class="co">#&#39; @method fit_ Get the model ready to forecast</span>
     <span class="co">#&#39; @param data The data to fit the model to.</span>
     <span class="dt">fit =</span> <span class="cf">function</span>(data){
       ...
     },
     <span class="co">#&#39; @method forecast Predict some number of time steps into the future.</span>
     <span class="co">#&#39; @param newdata The data to forecast from</span>
-    <span class="co">#&#39; @param steps The number of timesteps into the future to predict.</span>
+    <span class="co">#&#39; @param steps The number of timesteps into the future to forecast</span>
     <span class="dt">forecast =</span> <span class="cf">function</span>(newdata,steps){
       ...
     },
     <span class="co">#&#39; @method initialize Create a new instance of this class. </span>
     <span class="dt">initialize =</span> <span class="cf">function</span>(){
       ...
-    },
-    <span class="co">#&#39; @method predict predict using the model.</span>
-    <span class="co">#&#39; @param newdata Predict using the model.</span>
-    <span class="dt">predict =</span> <span class="cf">function</span>(newdata){
-      ...
-    },
+    }
   )
 )</code></pre></div>
 </div>
@@ -950,6 +946,7 @@ Proceed to Creating your own Model
     <span class="dt">.lambda =</span> <span class="kw">list</span>(),    ## specific to ARIMA models
     <span class="dt">.period =</span> <span class="kw">integer</span>(<span class="dv">0</span>) ## specific to SARIMA models
   ),</code></pre></div>
+<p>This section is comprised of inputs in your model that are not able to be accessed by the user directly, but will be updatable in the later initialize section. The arguments in the <code>fit()</code> and <code>forecast()</code> functions are fixed without incorporating private fields. For example, the <code>nsim</code> (number of simulations) may change, which makes it necessary to add these updatable variables in the private section. However, notice that all private variables include a <code>.</code> in the private section. This is the common way of distinguising a private variable in <code>R6</code>.</p>
 </div>
 <div id="update-the-fit-method" class="section level4">
 <h4>4. Update the fit Method</h4>
@@ -1037,40 +1034,9 @@ Proceed to Creating your own Model
       private<span class="op">$</span>.period &lt;-<span class="st"> </span>period
     },</code></pre></div>
 </div>
-<div id="update-the-active-section" class="section level4">
-<h4>6. Update the active section</h4>
-<p>This section determines what users can change in the model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">active =<span class="st"> </span><span class="kw">list</span>(
-    ## This list determines how you can access pieces of your model object
-    <span class="dt">data =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      <span class="cf">if</span>(<span class="op">!</span><span class="kw">missing</span>(value))
-        <span class="kw">stop</span>(<span class="st">&quot;Writing directly to the data is not allowed.&quot;</span>)
-      <span class="kw">return</span>(private<span class="op">$</span>.data)
-    },
-    <span class="dt">models =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      <span class="cf">if</span>(<span class="op">!</span><span class="kw">missing</span>(value))
-        <span class="kw">stop</span>(<span class="st">&quot;Writing directly to the models is not allowed.&quot;</span>)
-      <span class="kw">return</span>(private<span class="op">$</span>.models)
-    },
-    <span class="dt">nsim =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want to be able to change this parameter
-      private<span class="op">$</span><span class="kw">defaultActive</span>(<span class="dt">type=</span><span class="st">&quot;private&quot;</span>, <span class="st">&quot;.nsim&quot;</span>, <span class="dt">val=</span>value)
-    },
-    <span class="dt">lambda =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      <span class="cf">if</span>(<span class="op">!</span><span class="kw">missing</span>(value))
-        <span class="kw">stop</span>(<span class="st">&quot;Writing directly to lambda is not allowed.&quot;</span>)
-      <span class="kw">return</span>(private<span class="op">$</span>.lambda)
-    },
-    <span class="dt">period =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      <span class="cf">if</span>(<span class="op">!</span><span class="kw">missing</span>(value))
-        <span class="kw">stop</span>(<span class="st">&quot;Writing directly to the model period is not allowed.&quot;</span>)
-      <span class="kw">return</span>(private<span class="op">$</span>.period)
-    }
-  )</code></pre></div>
+<div id="update-the-active-binding" class="section level4">
+<h4>6. Update the active binding</h4>
+<p>We will ignore this section for now. It is a more advanced level and stay tuned for another vignette that expains active binding.</p>
 </div>
 <div id="putting-everything-together" class="section level4">
 <h4>7. Putting everything Together</h4>
@@ -1146,34 +1112,6 @@ SARIMATD1Model &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
       ## need to store these arguments within the model object
       private<span class="op">$</span>.nsim &lt;-<span class="st"> </span>nsim
       private<span class="op">$</span>.period &lt;-<span class="st"> </span>period
-    },
-    <span class="dt">predict =</span> <span class="cf">function</span>(newdata) {
-      <span class="kw">stop</span>(<span class="st">&quot;predict method has not been written.&quot;</span>)
-    }
-  ),
-  <span class="dt">active =</span> <span class="kw">list</span>(
-    ## This list determines how you can access pieces of your model object
-    <span class="dt">data =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      <span class="cf">if</span>(<span class="op">!</span><span class="kw">missing</span>(value))
-        <span class="kw">stop</span>(<span class="st">&quot;Writing directly to the data is not allowed.&quot;</span>)
-      <span class="kw">return</span>(private<span class="op">$</span>.data)
-    },
-    <span class="dt">models =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      <span class="cf">if</span>(<span class="op">!</span><span class="kw">missing</span>(value))
-        <span class="kw">stop</span>(<span class="st">&quot;Writing directly to the models is not allowed.&quot;</span>)
-      <span class="kw">return</span>(private<span class="op">$</span>.models)
-    },
-    <span class="dt">nsim =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want to be able to change this parameter
-      private<span class="op">$</span><span class="kw">defaultActive</span>(<span class="dt">type=</span><span class="st">&quot;private&quot;</span>, <span class="st">&quot;.nsim&quot;</span>, <span class="dt">val=</span>value)
-    },
-    <span class="dt">period =</span> <span class="cf">function</span>(value) {
-      ## use this form when you want this parameter to be un-modifiable
-      <span class="cf">if</span>(<span class="op">!</span><span class="kw">missing</span>(value))
-        <span class="kw">stop</span>(<span class="st">&quot;Writing directly to the model period is not allowed.&quot;</span>)
-      <span class="kw">return</span>(private<span class="op">$</span>.period)
     }
   )
 )</code></pre></div>
@@ -1297,7 +1235,7 @@ forecast_X &lt;-<span class="st"> </span>sarimaTD_model<span class="op">$</span>
 
 <div class="footer">
   <p>
-  	tutorials designed and created by <a href="wwww.github.com/katiehouse3">Katie House</a> (<a href="https://github.com/reichlab/forecast-framework-demos">click here for source code</a>)
+  	tutorials designed and created by <a href="www.github.com/katiehouse3">Katie House</a> (<a href="https://github.com/reichlab/forecast-framework-demos">click here for source code</a>)
   	<br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
   </p>
 </div>
