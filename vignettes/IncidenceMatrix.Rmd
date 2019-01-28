@@ -35,8 +35,8 @@ The `IncidenceMatrix` class has several fields that can be helpful for data prep
 * `$mat` show data in matrix form
 * `$nrow` number of rows
 * `$ncol` number of columns
-* `$colData` columns headers
-* `$rowData` row names
+* `$colData` list of metadata associated with the columns of the data
+* `$rowData` list of metadata associated with the rows of the data
 * `$cellData` list of cell metadata
 * `$cnames` names of matrix columns
 * `$rnames` names of matrix rows

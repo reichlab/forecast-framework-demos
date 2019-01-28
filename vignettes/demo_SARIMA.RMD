@@ -48,15 +48,19 @@ sarimaTDmodel <- SARIMATD1Model$new(period = 52, nsim = nsim)
 
 #### 3. Import CDC Flu Data
 To import the fluview data, use the `ilinet()` command. The data is then filtered to remove unneeded weeks and years. Then, the data is stored as an `IncidenceMatrix`. An `IncidenceMatrix` represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. `IncidenceMatrix` is the preferred input for ForecastFramework Models.
+
+The data will be put into a training, testing, and truth set. The training set will be used to fit the forecast model. The test set is the time period that the model will be forecasting from (this may include the training set). The truth set is the unknown validation data that the used to measure accuracy of the forecast model, this will not include the training data or the testing data. Below is a diagram to differentiate the different test splits:
+<img src="images/data-split.jpg" class="large">
+
 ```{r, warning=FALSE, message=FALSE}
 
-data2 <- ilinet(region = "National")
-data2 <- data2 %>% filter( week != 53)
-data2 <- data2 %>% 
-  filter( year > 2009 & 
+dat <- ilinet(region = "National")
+dat <- dat %>% 
+  filter( week != 53 &
+          year > 2009 & 
           year < 2018 & 
           !(year == 2017 & week > 18))
-data2 <- data2 %>%
+dat <- dat %>%
   select('region','year','week','weighted_ili', 'week_start')
 
 # Create a Preprocess Function
@@ -71,13 +75,16 @@ preprocess_inc <- function(dat){
 }
 
 # Seperate into Training and Testing Data
-training_data <- data2 %>% 
-  filter( ! ((year == 2016 & week >= 19)| (year == 2017 ) ))
-testing_data <- data2 %>% 
-  filter((year == 2016 & week >= 19) | (year == 2017 & week <= 18) )
+training_data <- dat %>% 
+  filter( ! ((year == 2016 ) | (year == 2017 ) ))
+testing_data <- dat %>% 
+  filter( ! ((year == 2016 & week >= 19) | (year == 2017 & week <= 18)) )
+truth_data <- dat %>% 
+  filter( ((year == 2016 & week >= 19) | (year == 2017 & week <= 18)) )
 
 training_inc <- preprocess_inc(training_data)
 testing_inc <- preprocess_inc(testing_data)
+truth_inc <- preprocess_inc(truth_data)
 
 ```
 
@@ -105,7 +112,7 @@ steps <- 52 # forecast ahead 52 weeks
 
 Then, use the built-in `$forecast()` function to create your forecasts. This creates a new R6 object with your forecasts and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.
 ```{r, warning=FALSE, message=FALSE}
-forecast_X <- sarimaTDmodel$forecast(steps = steps)
+forecast_X <- sarimaTDmodel$forecast(testing_inc,steps = steps)
 ```
 
 ### Plotting the Output
@@ -127,7 +134,7 @@ To include the `date_sick` in the  `forecast_X$data$mat` output, map the forecas
 # import testing dataset which has 2013 data
 
 # add prediction dates to original forecast
-preds_df[["date_sick"]] <-as.Date(testing_data$week_start, format = "%d-%m-%Y")
+preds_df[["date_sick"]] <-as.Date(truth_data$week_start, format = "%d-%m-%Y")
 ```
 
 Now, we can add the forecast to the `preds_df`. Notice the `$median()` and `$quantile()` functions accompanied with `$mat` will produce matricies with the prediction medians and quantiles, respectively. 
@@ -151,7 +158,7 @@ Finally, you are able to plot your sarimaTD Forecast! Lets use `ggplot2` to crea
 ### Weighted ILI sarimaTD Forecast
 
 ```{r, warning=FALSE, message=FALSE,echo=TRUE,fig.width=10, fig.height=4}
-data_X_3years <- data2 %>% filter(year > 2013)
+data_X_3years <- dat %>% filter(year > 2013)
 ggplot(data=preds_df, aes(x=date_sick)) +
   geom_ribbon(
     mapping = aes(ymin = pred_95_lb, ymax = pred_95_ub),

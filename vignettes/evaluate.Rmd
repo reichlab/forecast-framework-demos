@@ -37,21 +37,25 @@ source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-dem
 source_github('https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R')
 ```
 
-Upload data from cdcfluview as dataframes. In this demo, we are only concerned with years between 2010 and 2017. We split training/testing data by excluding the 2016-17 Flu season in the training set. 
+Upload data from cdcfluview as dataframes. In this demo, we are only concerned with years between 2010 and 2017. We split training, testing, and truth data by excluding the 2016-17 Flu season in the truth set. 
 ```{r, warning=FALSE, message=FALSE}
-data <- ilinet(region = "National")
-data <- data %>% filter( week != 53)
-data <- data %>% 
-  filter( year > 2009 & year < 2018 & 
+# Seperate into Training and Testing Data
+dat <- ilinet(region = "National")
+dat <- dat %>% 
+  filter( week != 53 &
+          year > 2009 & 
+          year < 2018 & 
           !(year == 2017 & week > 18))
-data <- data %>%
+dat <- dat %>%
   select('region','year','week','weighted_ili', 'week_start')
 
-# Seperate into Training and Testing Data
-training_data <- data %>% 
-  filter( ! ((year == 2016 & week >= 19)| (year == 2017 ) ))
-testing_data <- data %>% 
-  filter((year == 2016 & week >= 19) | (year == 2017 & week <= 18) )
+# Seperate into Training, Testing, and Truth Data
+training_data <- dat %>% 
+  filter( ! ((year == 2016 ) | (year == 2017 ) ))
+testing_data <- dat %>% 
+  filter( ! ((year == 2016 & week >= 19) | (year == 2017 & week <= 18)) )
+truth_data <- dat %>% 
+  filter( ((year == 2016 & week >= 19) | (year == 2017 & week <= 18)) )
 ```
 
 A **sample of the data** we are forecasting.
@@ -59,27 +63,24 @@ A **sample of the data** we are forecasting.
 head(testing_data,5)
 ```
 
-Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the `ObservationList$new()` ForecastFramework function to easily convert the dataframe to an `IncidenceMatrix`. The `$formArray()` is the second step to complete the `IncidenceMatrix`.
+Then, preprocess the training, testing, and truth dataframes to become new incidence matrices. This script uses the `ObservationList$new()` ForecastFramework function to easily convert the dataframe to an `IncidenceMatrix`. The `$formArray()` is the second step to complete the `IncidenceMatrix`.
 
 Note: The time step in this example is 52 weeks; however, there are datasets with other timesteps (e.g. 26 biweeks) that would impact the calculations of `t.step`, `dat$t`, and `max.year.time` values.
 ```{r, warning=FALSE, message=FALSE}
 # Create a Preprocess Function
-# Convert Training and Testing data to incidence matrices
-# time.in.year is a requirement for the GAM model
-time_step <- 52
 preprocess_inc <- function(dat){
   dat$time.in.year = dat$week
-  dat$t = dat$year + dat$week/time_step
+  dat$t = dat$year + dat$week/52
   inc = ObservationList$new(dat)
   inc$formArray('region','t',val='weighted_ili',
                 dimData = list(NULL,list('week','year','time.in.year','t')),
-                metaData = list(t.step = 1/time_step, max.year.time = time_step))
+                metaData = list(t.step = 1/52,max.year.time = 52))
   return(inc)
 }
 
-# Preprocess Data and convert to Inc Mat
 training_inc <- preprocess_inc(training_data)
 testing_inc <- preprocess_inc(testing_data)
+truth_inc <- preprocess_inc(truth_data)
 ```
 
 #### Defining Models
@@ -89,6 +90,7 @@ This demo will be evaluating the Generalized Additive Model (GAM), SARIMA, and s
 # Defining the Models
 nsim <- 1000 # Number of simulations 
 region_num <- 1 # Only modeling the "National" region
+time_step <- 52
 
 sarimaTD_model <- SARIMATD1Model$new(period = time_step, nsim = nsim)
 sarima_model <- SARIMAModel$new(period = time_step, nsim = nsim)
@@ -97,10 +99,9 @@ gam_model <- GamModel$new(numProvinces = region_num, nSims = nsim)
 
 #### Fitting Models
 Each model is fit with the training data.
-
 ```{r, warning=FALSE, message=FALSE}
 # Fit the Models 
-sarimaTD_model$fit(training_inc)
+sarimaTD_model$fit(training_inc) # Fitting this model will take awhile
 sarima_model$fit(training_inc)
 gam_model$fit(training_inc)
 ```
@@ -110,9 +111,9 @@ We are forecasting from the beginning of flu season 2016-17, 52 weeks into the f
 ```{r, warning=FALSE, message=FALSE}
 # Forecasting the Models
 steps <- 52 # forecast ahead 26 biweeks
-forecast_sarimaTD <- sarimaTD_model$forecast(step = steps)
-forecast_sarima <- sarima_model$forecast(step = steps)
-forecast_gam <- gam_model$forecast(step = steps)
+forecast_sarimaTD <- sarimaTD_model$forecast(testing_inc, step = steps)
+forecast_sarima <- sarima_model$forecast(testing_inc, step = steps)
+forecast_gam <- gam_model$forecast(testing_inc, step = steps)
 ```
 
 #### Evaluating the Models
@@ -126,9 +127,9 @@ This function creates a time series visualization with the predicted median and 
 ```{r, warning=FALSE, message=FALSE,fig.width=11, fig.height=5,}
 # Function to create time series with Visualization
 visualize_model <- function(forecast, rib_color, main_color){
-  data_X_3years <- data %>% filter(year > 2013)
+  data_X_3years <- dat %>% filter(year > 2013)
   preds_df <- data.frame(as.table(t(forecast$data$mat)))
-  preds_df[["week_start"]] <-as.Date(testing_data$week_start, format = "%Y-%d-%m")
+  preds_df[["week_start"]] <-as.Date(truth_data$week_start, format = "%Y-%d-%m")
   preds_df <- preds_df %>%
     mutate( 
       pred_total_cases = as.vector(forecast$mean(na.rm=TRUE)$mat),
@@ -217,10 +218,10 @@ evaluate <- function(forecast){
   forecast_mat[is.na(forecast_mat)] <- 0
   
   # Evaluate Performance
-  MAE <- MAE(forecast_mat, testing_inc)
-  MSE <- MSE(forecast_mat, testing_inc)
-  MAPE <- MAPE(forecast_mat, testing_inc)
-  RMSE <- RMSE(forecast_mat, testing_inc)
+  MAE <- MAE(forecast_mat, truth_inc)
+  MSE <- MSE(forecast_mat, truth_inc)
+  MAPE <- MAPE(forecast_mat, truth_inc)
+  RMSE <- RMSE(forecast_mat, truth_inc)
   return(c(MAE,MSE,MAPE,RMSE))
 }
 

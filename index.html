@@ -130,7 +130,7 @@ $(document).ready(function () {
 <h3>Usage</h3>
 <p>ForecastFramework is one of the primary forecast modeling tools used at the <a href="http://reichlab.io/">Reich Lab</a> at the University of Massachusetts Amherst. As one example, we use it under the hood in generating <a href="https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004761">our real-time dengue forecasts for the Ministry of Public Health in Thailand</a>.</p>
 <p>The following diagram illustrates the flow of a ForecastFramework Modeling process:</p>
-<p><img src="images/ff_diagram_overview.png" class="large"></p>
+<p><img src="images/ff_diagram_overview.jpg" class="large"></p>
 </div>
 <div id="creation" class="section level3">
 <h3>Creation</h3>
@@ -148,8 +148,6 @@ Proceed to Getting Started
 <h3>Installation of Forecast Framework</h3>
 <p>ForecastFramework is an open source R package hosted on <a href="https://cran.r-project.org/web/packages/ForecastFramework/index.html">CRAN</a> and <a href="https://github.com/HopkinsIDD/ForecastFramework">Github</a>.</p>
 <p>To install this package, run either of the following commands in your <a href="https://www.rstudio.com/">Rstudio</a> console:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&#39;ForecastFramework&#39;</span>)</code></pre></div>
-<p>or,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
 devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;HopkinsIDD/ForecastFramework&#39;</span>)</code></pre></div>
 </div>
@@ -157,7 +155,8 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 <h2>Run this to ensure you have all the Dependencies</h2>
 <p>Run these lines of code before performing the vignette. NOTE: you only need to run this once. This script installs all of the necessary R packages for the rest of the demo.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&#39;R6&#39;</span>,<span class="st">&#39;devtools&#39;</span>,<span class="st">&#39;forecast&#39;</span>,<span class="st">&#39;ggplot2&#39;</span>,
-                   <span class="st">&#39;gridExtra&#39;</span>,<span class="st">&#39;data.table&#39;</span>,<span class="st">&#39;knitr&#39;</span>,<span class="st">&#39;kableExtra&#39;</span>,<span class="st">&#39;RCurl&#39;</span>))</code></pre></div>
+                   <span class="st">&#39;gridExtra&#39;</span>,<span class="st">&#39;data.table&#39;</span>,<span class="st">&#39;knitr&#39;</span>,<span class="st">&#39;kableExtra&#39;</span>,<span class="st">&#39;RCurl&#39;</span>))
+<span class="kw">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="dt">repos =</span> <span class="st">&quot;https://cloud.r-project.org&quot;</span>)</code></pre></div>
 <p>Then run these commands:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
 devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;HopkinsIDD/ForecastFramework&#39;</span>)
@@ -236,12 +235,12 @@ dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span>
 <pre><code>## # A tibble: 6 x 5
 ##   region    year  week weighted_ili week_start
 ##   &lt;chr&gt;    &lt;int&gt; &lt;int&gt;        &lt;dbl&gt; &lt;date&gt;    
-## 1 National  1997    40         1.10 1997-10-06
-## 2 National  1997    41         1.20 1997-10-13
-## 3 National  1997    42         1.38 1997-10-20
-## 4 National  1997    43         1.20 1997-10-27
-## 5 National  1997    44         1.66 1997-11-03
-## 6 National  1997    45         1.41 1997-11-10</code></pre>
+## 1 National  1997    40         1.10 1997-09-28
+## 2 National  1997    41         1.20 1997-10-05
+## 3 National  1997    42         1.38 1997-10-12
+## 4 National  1997    43         1.20 1997-10-19
+## 5 National  1997    44         1.66 1997-10-26
+## 6 National  1997    45         1.41 1997-11-02</code></pre>
 </div>
 <div id="time-series" class="section level4">
 <h4>Time Series</h4>
@@ -256,7 +255,7 @@ plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class=
 <span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="op">+</span>
 <span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;National Weighted Inluenza-Like Illness&quot;</span>)
 <span class="kw">print</span>(plot)</code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="scope-of-this-demo" class="section level4">
 <h4>Scope of this demo</h4>
@@ -285,7 +284,7 @@ Proceed to Defining the Inputs
 <li>Make sure you import <code>ForecastFramework</code> and <code>R6</code></li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(R6)</code></pre></div>
-<pre><code>## Warning: package &#39;R6&#39; was built under R version 3.5.1</code></pre>
+<pre><code>## Warning: package &#39;R6&#39; was built under R version 3.5.2</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ForecastFramework)</code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Create a new matrix with your data</li>
@@ -308,8 +307,8 @@ Proceed to Defining the Inputs
 <li><code>$mat</code> show data in matrix form</li>
 <li><code>$nrow</code> number of rows</li>
 <li><code>$ncol</code> number of columns</li>
-<li><code>$colData</code> columns headers</li>
-<li><code>$rowData</code> row names</li>
+<li><code>$colData</code> list of metadata associated with the columns of the data</li>
+<li><code>$rowData</code> list of metadata associated with the rows of the data</li>
 <li><code>$cellData</code> list of cell metadata</li>
 <li><code>$cnames</code> names of matrix columns</li>
 <li><code>$rnames</code> names of matrix rows</li>
@@ -413,13 +412,14 @@ sarimaTDmodel &lt;-<span class="st"> </span>SARIMATD1Model<span class="op">$</sp
 <div id="import-cdc-flu-data" class="section level4">
 <h4>3. Import CDC Flu Data</h4>
 <p>To import the fluview data, use the <code>ilinet()</code> command. The data is then filtered to remove unneeded weeks and years. Then, the data is stored as an <code>IncidenceMatrix</code>. An <code>IncidenceMatrix</code> represents spatial time-series data in a matrix with one row per location and one column per time. To do this, another series of transformations are made. <code>IncidenceMatrix</code> is the preferred input for ForecastFramework Models.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data2 &lt;-<span class="st"> </span><span class="kw">ilinet</span>(<span class="dt">region =</span> <span class="st">&quot;National&quot;</span>)
-data2 &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>( week <span class="op">!=</span><span class="st"> </span><span class="dv">53</span>)
-data2 &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>( year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2009</span> <span class="op">&amp;</span><span class="st"> </span>
+<p>The data will be put into a training, testing, and truth set. The training set will be used to fit the forecast model. The test set is the time period that the model will be forecasting from (this may include the training set). The truth set is the unknown validation data that the used to measure accuracy of the forecast model, this will not include the training data or the testing data. Below is a diagram to differentiate the different test splits: <img src="images/data-split.jpg" class="large"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span><span class="kw">ilinet</span>(<span class="dt">region =</span> <span class="st">&quot;National&quot;</span>)
+dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( week <span class="op">!=</span><span class="st"> </span><span class="dv">53</span> <span class="op">&amp;</span>
+<span class="st">          </span>year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2009</span> <span class="op">&amp;</span><span class="st"> </span>
 <span class="st">          </span>year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2018</span> <span class="op">&amp;</span><span class="st"> </span>
 <span class="st">          </span><span class="op">!</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;</span><span class="st"> </span><span class="dv">18</span>))
-data2 &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span>
+dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(<span class="st">&#39;region&#39;</span>,<span class="st">&#39;year&#39;</span>,<span class="st">&#39;week&#39;</span>,<span class="st">&#39;weighted_ili&#39;</span>, <span class="st">&#39;week_start&#39;</span>)
 
 <span class="co"># Create a Preprocess Function</span>
@@ -434,13 +434,16 @@ preprocess_inc &lt;-<span class="st"> </span><span class="cf">function</span>(da
 }
 
 <span class="co"># Seperate into Training and Testing Data</span>
-training_data &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="st"> </span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>)<span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> ) ))
-testing_data &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&lt;=</span><span class="st"> </span><span class="dv">18</span>) )
+training_data &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="st"> </span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> ) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> ) ))
+testing_data &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="st"> </span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&lt;=</span><span class="st"> </span><span class="dv">18</span>)) )
+truth_data &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( ((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&lt;=</span><span class="st"> </span><span class="dv">18</span>)) )
 
 training_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(training_data)
-testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(testing_data)</code></pre></div>
+testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(testing_data)
+truth_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(truth_data)</code></pre></div>
 <p>Let’s look at a sample from the new <code>IncidenceMatrix</code> to view the <code>IncidenceMatrix</code> Format:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(training_inc<span class="op">$</span>mat[,<span class="dv">0</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
 <pre><code>## 2010.01923076923 2010.03846153846 2010.05769230769 2010.07692307692 
@@ -464,7 +467,7 @@ testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>
 <p>Before forecasting, you must specify how many periods ahead you would like to forecast. This is defined by the <code>steps</code> parameter. Then, you forecast with the <code>sarimaTDmodel$forecast()</code> method. This model will forecast one year into the future (26 biweeks).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">steps &lt;-<span class="st"> </span><span class="dv">52</span> <span class="co"># forecast ahead 52 weeks</span></code></pre></div>
 <p>Then, use the built-in <code>$forecast()</code> function to create your forecasts. This creates a new R6 object with your forecasts and many other useful built-in functions. Be sure to check out the Evaluation section for usage of the Forecasting function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X &lt;-<span class="st"> </span>sarimaTDmodel<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">steps =</span> steps)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X &lt;-<span class="st"> </span>sarimaTDmodel<span class="op">$</span><span class="kw">forecast</span>(testing_inc,<span class="dt">steps =</span> steps)</code></pre></div>
 </div>
 </div>
 <div id="plotting-the-output" class="section level3">
@@ -473,22 +476,22 @@ testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>
 <h4>5. Formatting the Forecast Output</h4>
 <p>To view the the median forecast of the simulations, execute the following command:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forecast_X<span class="op">$</span><span class="kw">median</span>()<span class="op">$</span>mat</code></pre></div>
-<pre><code>##                 1        2        3        4        5        6        7
-## National 1.584742 1.526748 1.443575 1.418816 1.301111 1.161724 1.174942
-##                 8       9        10        11        12        13       14
-## National 1.140849 1.01655 0.9882865 0.9805727 0.8680418 0.8757863 0.837442
-##                 15        16        17       18       19       20       21
-## National 0.8520797 0.8660965 0.9375262 1.090753 1.200582 1.254382 1.258886
-##                22       23       24       25      26       27       28
-## National 1.315844 1.359057 1.490701 1.491834 1.50524 1.635504 1.635482
-##                29       30       31       32       33       34       35
-## National 2.030026 2.032087 2.242976 2.433854 3.322446 3.589615 2.853262
-##                36       37      38       39       40       41      42
-## National 2.700749 3.055779 3.27241 3.033982 3.190194 3.305084 2.81014
-##                43       44       45       46       47       48       49
-## National 2.828586 2.717409 2.501638 2.384883 2.145852 1.971489 1.652278
-##                50       51       52
-## National 1.567704 1.488945 1.385259</code></pre>
+<pre><code>##                1        2        3        4        5        6        7
+## National 1.60222 1.517003 1.451777 1.421859 1.282271 1.141956 1.153322
+##                 8         9        10        11        12       13
+## National 1.147359 0.9795403 0.9668512 0.9520091 0.8279257 0.866433
+##                 14        15       16       17       18       19      20
+## National 0.8024566 0.8194832 0.825563 0.877521 1.021738 1.132393 1.21812
+##                21       22       23       24       25      26       27
+## National 1.179522 1.286732 1.342655 1.447219 1.417237 1.43861 1.571644
+##                28       29      30       31       32      33       34
+## National 1.575276 1.979737 1.97458 2.150017 2.460296 3.12454 3.449338
+##                35       36       37       38       39       40       41
+## National 2.625559 2.657756 2.747361 2.933748 2.737146 3.014654 3.228957
+##                42       43       44      45       46       47       48
+## National 2.783363 2.900718 2.962712 2.59425 2.414608 2.307569 2.015418
+##                49      50       51       52
+## National 1.689113 1.67496 1.602514 1.519792</code></pre>
 <p>Lets convert the forecast matrix to a dataframe in R for easy manipulation:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># converting predictions to a dataframe to use dplyr</span>
 preds_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">as.table</span>(<span class="kw">t</span>(forecast_X<span class="op">$</span>data<span class="op">$</span>mat)))</code></pre></div>
@@ -497,7 +500,7 @@ preds_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span 
 <span class="co"># import testing dataset which has 2013 data</span>
 
 <span class="co"># add prediction dates to original forecast</span>
-preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">as.Date</span>(testing_data<span class="op">$</span>week_start, <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y&quot;</span>)</code></pre></div>
+preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">as.Date</span>(truth_data<span class="op">$</span>week_start, <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y&quot;</span>)</code></pre></div>
 <p>Now, we can add the forecast to the <code>preds_df</code>. Notice the <code>$median()</code> and <code>$quantile()</code> functions accompanied with <code>$mat</code> will produce matricies with the prediction medians and quantiles, respectively.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">preds_df &lt;-<span class="st"> </span>preds_df <span class="op">%&gt;%</span>
 <span class="st">   </span><span class="kw">mutate</span>( 
@@ -511,17 +514,17 @@ preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">
    )
 <span class="kw">print</span>(<span class="kw">head</span>(preds_df,<span class="dv">5</span>)) <span class="co"># Print the first 5 rows</span></code></pre></div>
 <pre><code>##   Var1     Var2     Freq  date_sick pred_total_cases pred_95_lb pred_95_ub
-## 1    1 National 1.494988 2016-05-09         1.584742   1.492623   1.738221
-## 2    2 National 1.434023 2016-05-16         1.526748   1.372367   1.736432
-## 3    3 National 1.305924 2016-05-23         1.443575   1.307798   1.609338
-## 4    4 National 1.377093 2016-05-30         1.418816   1.313325   1.604585
-## 5    5 National 1.277542 2016-06-06         1.301111   1.182285   1.463765
+## 1    1 National 1.504730 2016-05-08         1.602220   1.502178   1.771799
+## 2    2 National 1.440596 2016-05-15         1.517003   1.367820   1.723899
+## 3    3 National 1.309106 2016-05-22         1.451777   1.312411   1.597535
+## 4    4 National 1.356588 2016-05-29         1.421859   1.298772   1.557929
+## 5    5 National 1.247252 2016-06-05         1.282271   1.166937   1.459569
 ##   pred_80_lb pred_80_ub pred_50_lb pred_50_ub
-## 1   1.493310   1.724331   1.521874   1.686489
-## 2   1.378031   1.698894   1.452463   1.545781
-## 3   1.309672   1.600059   1.326824   1.525930
-## 4   1.321713   1.603285   1.382052   1.473694
-## 5   1.182317   1.461521   1.243019   1.416048</code></pre>
+## 1   1.502919   1.756320   1.533810   1.714173
+## 2   1.370245   1.696371   1.451258   1.529072
+## 3   1.315716   1.587900   1.342150   1.541461
+## 4   1.302582   1.553202   1.359388   1.441230
+## 5   1.183448   1.457517   1.230229   1.392675</code></pre>
 </div>
 <div id="plot-the-forecast-output" class="section level4">
 <h4>6. Plot the Forecast Output</h4>
@@ -530,7 +533,7 @@ preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">
 </div>
 <div id="weighted-ili-sarimatd-forecast" class="section level3">
 <h3>Weighted ILI sarimaTD Forecast</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_X_3years &lt;-<span class="st"> </span>data2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2013</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_X_3years &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2013</span>)
 <span class="kw">ggplot</span>(<span class="dt">data=</span>preds_df, <span class="kw">aes</span>(<span class="dt">x=</span>date_sick)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_ribbon</span>(
     <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">ymin =</span> pred_95_lb, <span class="dt">ymax =</span> pred_95_ub),
@@ -551,7 +554,7 @@ preds_df[[<span class="st">&quot;date_sick&quot;</span>]] &lt;-<span class="kw">
             <span class="dt">size=</span><span class="fl">0.7</span>,
             <span class="dt">data =</span> data_X_3years) <span class="op">+</span>
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Weighted ILI&quot;</span>)</code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" width="960" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-33-1.png" width="960" /></p>
 <a href="#evaluating-multiple-models">
 <button type="button" class="btn btn-raised btn-secondary">
 Proceed to Evaluating Multiple Models
@@ -591,49 +594,50 @@ source_github &lt;-<span class="st"> </span><span class="cf">function</span>(u) 
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMAModel.R&#39;</span>)
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/GamModel.R&#39;</span>)
 <span class="kw">source_github</span>(<span class="st">&#39;https://raw.githubusercontent.com/reichlab/forecast-framework-demos/master/models/SARIMATD1Model.R&#39;</span>)</code></pre></div>
-<p>Upload data from cdcfluview as dataframes. In this demo, we are only concerned with years between 2010 and 2017. We split training/testing data by excluding the 2016-17 Flu season in the training set.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">ilinet</span>(<span class="dt">region =</span> <span class="st">&quot;National&quot;</span>)
-data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>( week <span class="op">!=</span><span class="st"> </span><span class="dv">53</span>)
-data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>( year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2009</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2018</span> <span class="op">&amp;</span><span class="st"> </span>
+<p>Upload data from cdcfluview as dataframes. In this demo, we are only concerned with years between 2010 and 2017. We split training, testing, and truth data by excluding the 2016-17 Flu season in the truth set.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Seperate into Training and Testing Data</span>
+dat &lt;-<span class="st"> </span><span class="kw">ilinet</span>(<span class="dt">region =</span> <span class="st">&quot;National&quot;</span>)
+dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( week <span class="op">!=</span><span class="st"> </span><span class="dv">53</span> <span class="op">&amp;</span>
+<span class="st">          </span>year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2009</span> <span class="op">&amp;</span><span class="st"> </span>
+<span class="st">          </span>year <span class="op">&lt;</span><span class="st"> </span><span class="dv">2018</span> <span class="op">&amp;</span><span class="st"> </span>
 <span class="st">          </span><span class="op">!</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;</span><span class="st"> </span><span class="dv">18</span>))
-data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span>
+dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(<span class="st">&#39;region&#39;</span>,<span class="st">&#39;year&#39;</span>,<span class="st">&#39;week&#39;</span>,<span class="st">&#39;weighted_ili&#39;</span>, <span class="st">&#39;week_start&#39;</span>)
 
-<span class="co"># Seperate into Training and Testing Data</span>
-training_data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="st"> </span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>)<span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> ) ))
-testing_data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&lt;=</span><span class="st"> </span><span class="dv">18</span>) )</code></pre></div>
+<span class="co"># Seperate into Training, Testing, and Truth Data</span>
+training_data &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="st"> </span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> ) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> ) ))
+testing_data &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( <span class="op">!</span><span class="st"> </span>((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&lt;=</span><span class="st"> </span><span class="dv">18</span>)) )
+truth_data &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>( ((year <span class="op">==</span><span class="st"> </span><span class="dv">2016</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&gt;=</span><span class="st"> </span><span class="dv">19</span>) <span class="op">|</span><span class="st"> </span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2017</span> <span class="op">&amp;</span><span class="st"> </span>week <span class="op">&lt;=</span><span class="st"> </span><span class="dv">18</span>)) )</code></pre></div>
 <p>A <strong>sample of the data</strong> we are forecasting.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(testing_data,<span class="dv">5</span>)</code></pre></div>
 <pre><code>## # A tibble: 5 x 5
 ##   region    year  week weighted_ili week_start
 ##   &lt;chr&gt;    &lt;int&gt; &lt;int&gt;        &lt;dbl&gt; &lt;date&gt;    
-## 1 National  2016    19         1.39 2016-05-09
-## 2 National  2016    20         1.30 2016-05-16
-## 3 National  2016    21         1.18 2016-05-23
-## 4 National  2016    22         1.14 2016-05-30
-## 5 National  2016    23         1.04 2016-06-06</code></pre>
-<p>Then, preprocess both the training and testing dataframes to become new incidence matrices. This script uses the <code>ObservationList$new()</code> ForecastFramework function to easily convert the dataframe to an <code>IncidenceMatrix</code>. The <code>$formArray()</code> is the second step to complete the <code>IncidenceMatrix</code>.</p>
+## 1 National  2010     1         1.91 2010-01-03
+## 2 National  2010     2         1.87 2010-01-10
+## 3 National  2010     3         1.88 2010-01-17
+## 4 National  2010     4         1.97 2010-01-24
+## 5 National  2010     5         2.11 2010-01-31</code></pre>
+<p>Then, preprocess the training, testing, and truth dataframes to become new incidence matrices. This script uses the <code>ObservationList$new()</code> ForecastFramework function to easily convert the dataframe to an <code>IncidenceMatrix</code>. The <code>$formArray()</code> is the second step to complete the <code>IncidenceMatrix</code>.</p>
 <p>Note: The time step in this example is 52 weeks; however, there are datasets with other timesteps (e.g. 26 biweeks) that would impact the calculations of <code>t.step</code>, <code>dat$t</code>, and <code>max.year.time</code> values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a Preprocess Function</span>
-<span class="co"># Convert Training and Testing data to incidence matrices</span>
-<span class="co"># time.in.year is a requirement for the GAM model</span>
-time_step &lt;-<span class="st"> </span><span class="dv">52</span>
 preprocess_inc &lt;-<span class="st"> </span><span class="cf">function</span>(dat){
   dat<span class="op">$</span>time.in.year =<span class="st"> </span>dat<span class="op">$</span>week
-  dat<span class="op">$</span>t =<span class="st"> </span>dat<span class="op">$</span>year <span class="op">+</span><span class="st"> </span>dat<span class="op">$</span>week<span class="op">/</span>time_step
+  dat<span class="op">$</span>t =<span class="st"> </span>dat<span class="op">$</span>year <span class="op">+</span><span class="st"> </span>dat<span class="op">$</span>week<span class="op">/</span><span class="dv">52</span>
   inc =<span class="st"> </span>ObservationList<span class="op">$</span><span class="kw">new</span>(dat)
   inc<span class="op">$</span><span class="kw">formArray</span>(<span class="st">&#39;region&#39;</span>,<span class="st">&#39;t&#39;</span>,<span class="dt">val=</span><span class="st">&#39;weighted_ili&#39;</span>,
                 <span class="dt">dimData =</span> <span class="kw">list</span>(<span class="ot">NULL</span>,<span class="kw">list</span>(<span class="st">&#39;week&#39;</span>,<span class="st">&#39;year&#39;</span>,<span class="st">&#39;time.in.year&#39;</span>,<span class="st">&#39;t&#39;</span>)),
-                <span class="dt">metaData =</span> <span class="kw">list</span>(<span class="dt">t.step =</span> <span class="dv">1</span><span class="op">/</span>time_step, <span class="dt">max.year.time =</span> time_step))
+                <span class="dt">metaData =</span> <span class="kw">list</span>(<span class="dt">t.step =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">52</span>,<span class="dt">max.year.time =</span> <span class="dv">52</span>))
   <span class="kw">return</span>(inc)
 }
 
-<span class="co"># Preprocess Data and convert to Inc Mat</span>
 training_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(training_data)
-testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(testing_data)</code></pre></div>
+testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(testing_data)
+truth_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>(truth_data)</code></pre></div>
 </div>
 <div id="defining-models" class="section level4">
 <h4>Defining Models</h4>
@@ -641,6 +645,7 @@ testing_inc &lt;-<span class="st"> </span><span class="kw">preprocess_inc</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Defining the Models</span>
 nsim &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># Number of simulations </span>
 region_num &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># Only modeling the &quot;National&quot; region</span>
+time_step &lt;-<span class="st"> </span><span class="dv">52</span>
 
 sarimaTD_model &lt;-<span class="st"> </span>SARIMATD1Model<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> time_step, <span class="dt">nsim =</span> nsim)
 sarima_model &lt;-<span class="st"> </span>SARIMAModel<span class="op">$</span><span class="kw">new</span>(<span class="dt">period =</span> time_step, <span class="dt">nsim =</span> nsim)
@@ -650,7 +655,7 @@ gam_model &lt;-<span class="st"> </span>GamModel<span class="op">$</span><span c
 <h4>Fitting Models</h4>
 <p>Each model is fit with the training data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit the Models </span>
-sarimaTD_model<span class="op">$</span><span class="kw">fit</span>(training_inc)
+sarimaTD_model<span class="op">$</span><span class="kw">fit</span>(training_inc) <span class="co"># Fitting this model will take awhile</span>
 sarima_model<span class="op">$</span><span class="kw">fit</span>(training_inc)
 gam_model<span class="op">$</span><span class="kw">fit</span>(training_inc)</code></pre></div>
 </div>
@@ -659,9 +664,9 @@ gam_model<span class="op">$</span><span class="kw">fit</span>(training_inc)</cod
 <p>We are forecasting from the beginning of flu season 2016-17, 52 weeks into the future.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Forecasting the Models</span>
 steps &lt;-<span class="st"> </span><span class="dv">52</span> <span class="co"># forecast ahead 26 biweeks</span>
-forecast_sarimaTD &lt;-<span class="st"> </span>sarimaTD_model<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">step =</span> steps)
-forecast_sarima &lt;-<span class="st"> </span>sarima_model<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">step =</span> steps)
-forecast_gam &lt;-<span class="st"> </span>gam_model<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">step =</span> steps)</code></pre></div>
+forecast_sarimaTD &lt;-<span class="st"> </span>sarimaTD_model<span class="op">$</span><span class="kw">forecast</span>(testing_inc, <span class="dt">step =</span> steps)
+forecast_sarima &lt;-<span class="st"> </span>sarima_model<span class="op">$</span><span class="kw">forecast</span>(testing_inc, <span class="dt">step =</span> steps)
+forecast_gam &lt;-<span class="st"> </span>gam_model<span class="op">$</span><span class="kw">forecast</span>(testing_inc, <span class="dt">step =</span> steps)</code></pre></div>
 </div>
 <div id="evaluating-the-models" class="section level4">
 <h4>Evaluating the Models</h4>
@@ -670,9 +675,9 @@ forecast_gam &lt;-<span class="st"> </span>gam_model<span class="op">$</span><sp
 <p><strong>Side-by-Side Forecasting Timeseries</strong> This function creates a time series visualization with the predicted median and quantiles displayed by a specific color. Notice <code>forecast$quantile(0.025)$mat</code> gives a matrix with a 2.5% quantile. Additionally, <code>forecast$mean()$mat</code> gives the mean forecast for that specific time period. Additionally, <code>na.rm=TRUE</code>, removes any NA values in the simulation to calculate the mean.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Function to create time series with Visualization</span>
 visualize_model &lt;-<span class="st"> </span><span class="cf">function</span>(forecast, rib_color, main_color){
-  data_X_3years &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2013</span>)
+  data_X_3years &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2013</span>)
   preds_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">as.table</span>(<span class="kw">t</span>(forecast<span class="op">$</span>data<span class="op">$</span>mat)))
-  preds_df[[<span class="st">&quot;week_start&quot;</span>]] &lt;-<span class="kw">as.Date</span>(testing_data<span class="op">$</span>week_start, <span class="dt">format =</span> <span class="st">&quot;%Y-%d-%m&quot;</span>)
+  preds_df[[<span class="st">&quot;week_start&quot;</span>]] &lt;-<span class="kw">as.Date</span>(truth_data<span class="op">$</span>week_start, <span class="dt">format =</span> <span class="st">&quot;%Y-%d-%m&quot;</span>)
   preds_df &lt;-<span class="st"> </span>preds_df <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">mutate</span>( 
       <span class="dt">pred_total_cases =</span> <span class="kw">as.vector</span>(forecast<span class="op">$</span><span class="kw">mean</span>(<span class="dt">na.rm=</span><span class="ot">TRUE</span>)<span class="op">$</span>mat),
@@ -718,7 +723,7 @@ plot3 &lt;-<span class="st"> </span><span class="kw">visualize_model</span>(fore
 
 <span class="co"># Display side-by-side plots</span>
 <span class="kw">grid.arrange</span>(plot1, plot2, plot3, <span class="dt">ncol=</span><span class="dv">3</span>)</code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-42-1.png" width="1056" /> Note the sparsity in the SARIMA forecast, due to some forecasted trajectories yielding undefined forecasted means (e.g. if one of the trajectories contains a non-numeric or NA value). This is one benefit of sarimaTD - the ability to provide stable long-term forecasts with the aid of transformations and seasonal differencing. It avoids some of the “brittlenes” that we have observed when just using SARIMA fitting out of the box.</p>
+<p><img src="index_files/figure-html/unnamed-chunk-41-1.png" width="1056" /> Note the sparsity in the SARIMA forecast, due to some forecasted trajectories yielding undefined forecasted means (e.g. if one of the trajectories contains a non-numeric or NA value). This is one benefit of sarimaTD - the ability to provide stable long-term forecasts with the aid of transformations and seasonal differencing. It avoids some of the “brittlenes” that we have observed when just using SARIMA fitting out of the box.</p>
 <p><strong>Common Evaluation Metrics</strong> Calculating evaluation metrics is easy with ForecastFramework objects.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mean Absolute Error</span>
 MAE &lt;-<span class="st"> </span><span class="cf">function</span>(forecast_mean, test_inc){
@@ -754,10 +759,10 @@ evaluate &lt;-<span class="st"> </span><span class="cf">function</span>(forecast
   forecast_mat[<span class="kw">is.na</span>(forecast_mat)] &lt;-<span class="st"> </span><span class="dv">0</span>
   
   <span class="co"># Evaluate Performance</span>
-  MAE &lt;-<span class="st"> </span><span class="kw">MAE</span>(forecast_mat, testing_inc)
-  MSE &lt;-<span class="st"> </span><span class="kw">MSE</span>(forecast_mat, testing_inc)
-  MAPE &lt;-<span class="st"> </span><span class="kw">MAPE</span>(forecast_mat, testing_inc)
-  RMSE &lt;-<span class="st"> </span><span class="kw">RMSE</span>(forecast_mat, testing_inc)
+  MAE &lt;-<span class="st"> </span><span class="kw">MAE</span>(forecast_mat, truth_inc)
+  MSE &lt;-<span class="st"> </span><span class="kw">MSE</span>(forecast_mat, truth_inc)
+  MAPE &lt;-<span class="st"> </span><span class="kw">MAPE</span>(forecast_mat, truth_inc)
+  RMSE &lt;-<span class="st"> </span><span class="kw">RMSE</span>(forecast_mat, truth_inc)
   <span class="kw">return</span>(<span class="kw">c</span>(MAE,MSE,MAPE,RMSE))
 }
 
@@ -787,13 +792,13 @@ GAM
 MAE
 </td>
 <td style="text-align:right;">
-0.4021462
+0.3799110
 </td>
 <td style="text-align:right;">
-1.614517
+1.586660
 </td>
 <td style="text-align:right;">
-1.041880
+1.044438
 </td>
 </tr>
 <tr>
@@ -801,13 +806,13 @@ MAE
 MSE
 </td>
 <td style="text-align:right;">
-0.5269682
+0.4865753
 </td>
 <td style="text-align:right;">
-4.769612
+3.760848
 </td>
 <td style="text-align:right;">
-2.245318
+2.249297
 </td>
 </tr>
 <tr>
@@ -815,13 +820,13 @@ MSE
 MAPE
 </td>
 <td style="text-align:right;">
-16.9411844
+15.9814438
 </td>
 <td style="text-align:right;">
-70.659918
+85.486579
 </td>
 <td style="text-align:right;">
-50.044354
+50.098176
 </td>
 </tr>
 <tr>
@@ -829,13 +834,13 @@ MAPE
 RMSE
 </td>
 <td style="text-align:right;">
-0.7259258
+0.6975495
 </td>
 <td style="text-align:right;">
-2.183944
+1.939291
 </td>
 <td style="text-align:right;">
-1.498438
+1.499766
 </td>
 </tr>
 </tbody>
@@ -1174,22 +1179,44 @@ steps &lt;-<span class="st"> </span><span class="dv">52</span> <span class="co">
 forecast_X &lt;-<span class="st"> </span>sarimaTD_model<span class="op">$</span><span class="kw">forecast</span>(<span class="dt">steps =</span> steps)
 
 <span class="kw">print</span>(forecast_X<span class="op">$</span>data<span class="op">$</span>mat)</code></pre></div>
-<pre><code>##                 1        2        3        4        5        6        7
-## National 1.494988 1.434023 1.305924 1.377093 1.277542 1.118989 1.107131
-##                 8        9        10       11       12        13        14
-## National 1.154718 1.075546 0.9737291 1.012862 0.968587 0.9295113 0.7956496
-##                 15        16        17       18       19       20       21
-## National 0.8622301 0.8591591 0.9388838 1.078237 1.289133 1.398952 1.492972
-##               22       23       24       25      26       27       28
-## National 1.60926 1.751339 1.542025 1.653691 1.66884 1.773896 1.632859
-##                29       30       31       32       33       34       35
-## National 1.857147 2.038057 2.382388 2.746086 3.745335 4.282143 2.835912
-##                36       37       38       39       40       41       42
-## National 2.686989 2.657029 2.691704 2.983318 3.318447 3.182371 2.847058
-##                43       44       45       46       47       48       49
-## National 3.019881 3.161179 2.587937 2.261168 2.166532 2.030118 1.869631
-##                50       51       52
-## National 1.842289 1.811737 1.579724</code></pre>
+<pre><code>##                 1        2        3        4       5        6        7
+## National 1.506281 1.435443 1.304374 1.347654 1.24714 1.070886 1.096122
+##                 8        9        10       11        12        13
+## National 1.157917 1.047976 0.9764447 1.040178 0.9635555 0.9419319
+##                 14        15        16        17       18       19
+## National 0.8034576 0.8898613 0.8507697 0.8987568 1.039316 1.235505
+##                20       21       22       23       24       25       26
+## National 1.361213 1.424291 1.601538 1.758629 1.579438 1.744609 1.689507
+##                27       28       29       30       31       32       33
+## National 1.737789 1.599809 1.834851 1.946455 2.163725 2.501603 3.381165
+##               34       35       36      37      38       39       40
+## National 3.83878 2.527224 2.610964 2.57757 2.59635 2.874639 3.215275
+##                41       42       43       44       45       46       47
+## National 3.184312 2.996799 3.373688 3.607115 2.898903 2.553172 2.446302
+##                48       49       50       51       52
+## National 2.176144 1.937228 1.939763 1.910833 1.678264</code></pre>
+<!-- Start of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+ var sc_project=10491184;
+ var sc_invisible=1;
+ var sc_security="40c0ea38";
+ var scJsHost = (("https:" == document.location.protocol) ?
+                 "https://secure." : "http://www.");
+ document.write("<sc" + "ript type='text/javascript' src='" +
+                scJsHost + "statcounter.com/counter/counter.js'></" +
+                "script>");
+</script>
+<noscript>
+<div class="statcounter">
+<pre><code>&lt;a title=&quot;shopify site analytics&quot;
+   href=&quot;http://statcounter.com/shopify/&quot; target=&quot;_blank&quot;&gt;
+  &lt;img class=&quot;statcounter&quot;
+       src=&quot;http://c.statcounter.com/10491184/0/40c0ea38/1/&quot;
+       alt=&quot;shopify site analytics&quot;&gt;
+&lt;/a&gt;</code></pre>
+</div>
+</noscript>
+<!-- End of StatCounter Code for Default Guide -->
 </div>
 </div>
 </div>
@@ -1235,7 +1262,7 @@ forecast_X &lt;-<span class="st"> </span>sarimaTD_model<span class="op">$</span>
 
 <div class="footer">
   <p>
-  	tutorials designed and created by <a href="www.github.com/katiehouse3">Katie House</a> (<a href="https://github.com/reichlab/forecast-framework-demos">click here for source code</a>)
+  	tutorials designed and created by <a href="https://www.github.com/katiehouse3">Katie House</a> (<a href="https://github.com/reichlab/forecast-framework-demos">click here for source code</a>)
   	<br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
   </p>
 </div>

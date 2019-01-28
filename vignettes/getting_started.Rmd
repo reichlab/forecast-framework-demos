@@ -10,10 +10,6 @@ ForecastFramework is an open source R package hosted on [CRAN](https://cran.r-pr
 
 To install this package, run either of the following commands in your [Rstudio](https://www.rstudio.com/) console:
 ```{r eval=FALSE}
-install.packages('ForecastFramework')
-```
-or,
-```{r eval=FALSE}
 library(devtools)
 devtools::install_github('HopkinsIDD/ForecastFramework')
 ```
@@ -23,6 +19,7 @@ Run these lines of code before performing the vignette. NOTE: you only need to r
 ```{r eval=FALSE}
 install.packages(c('R6','devtools','forecast','ggplot2',
                    'gridExtra','data.table','knitr','kableExtra','RCurl'))
+install.packages("dplyr", repos = "https://cloud.r-project.org")
 ```
 Then run these commands:
 ```{r eval=FALSE}
