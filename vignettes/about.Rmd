@@ -16,7 +16,7 @@ The following diagram illustrates the flow of a ForecastFramework Modeling proce
 <img src="images/ff_diagram_overview.jpg" class="large">
 
 ### Creation
-ForecastFramework was created by Joshua Kaminsky of the [Infectious Disease Dynamics Group](http://www.iddynamics.jhsph.edu/) at Johns Hopkins University. This demo was created by [Katie House](www.github.com/katiehouse3).
+ForecastFramework was created by Joshua Kaminsky of the [Infectious Disease Dynamics Group](http://www.iddynamics.jhsph.edu/) at Johns Hopkins University. This demo was created by [Katie House](https://www.github.com/katiehouse3).
 
 
 <a href="#getting-started"><button type="button" class="btn btn-raised btn-secondary">Proceed to Getting Started</button></a>
